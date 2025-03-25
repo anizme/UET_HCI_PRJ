@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import HomeScreen from './screens/HomeScreen';
+import ObjectRecognitionScreen from './screens/ObjectRecognitionScreen';
+import OCRScreen from './screens/OCRScreen';
+import NewsScreen from './screens/NewsScreen';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [currentScreen, setCurrentScreen] = useState('home');
+
+  const handleVoiceCommand = (command) => {
+    console.log('Received command:', command); // Log lệnh nhận được
+    const lowerCommand = command.toLowerCase();
+    if (lowerCommand.includes('nhận diện vật thể')) {
+      setCurrentScreen('object');
+    } else if (lowerCommand.includes('đọc văn bản')) {
+      setCurrentScreen('ocr');
+    } else if (lowerCommand.includes('tin tức')) {
+      setCurrentScreen('news');
+    } else if (lowerCommand.includes('quay lại')) {
+      setCurrentScreen('home');
+    } else {
+      console.log('Command not recognized:', lowerCommand); // Log lệnh không khớp
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app">
+      {currentScreen === 'home' && <HomeScreen onVoiceCommand={handleVoiceCommand} />}
+      {currentScreen === 'object' && <ObjectRecognitionScreen onVoiceCommand={handleVoiceCommand} />}
+      {currentScreen === 'ocr' && <OCRScreen onVoiceCommand={handleVoiceCommand} />}
+      {currentScreen === 'news' && <NewsScreen onVoiceCommand={handleVoiceCommand} />}
+    </div>
+  );
+};
 
-export default App
+export default App;

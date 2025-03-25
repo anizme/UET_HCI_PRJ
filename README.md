@@ -4,15 +4,20 @@
 - Node.js: Dùng cho BE (Node.js/Express)
 - NPM: Dùng cho FE (React)
 
-## Cài đặt và chạy BE:
-- cd backend
-- Tạo .env: tạm thời mặc định port, thích thì sửa
-- npm start: Chạy server
-
 ## Cài đặt và chạy FE:
 - cd frontend
 - npm install: Cài đặt dependencies, không push node_modules lên git vì nặng nên tự install các dependencies ở local
+- npm run dev -- --host: Chạy server. Chọn 1 url mà VITE liệt kê Netwwork:... Chép ip vào config.js trong frontend/src. Mục đích là fetch được api của backend
+
+## Cài đặt và chạy BE:
+- cd backend
+- Tạo .env: tạm thời mặc định port, thích thì sửa
 - npm run dev: Chạy server
 
 ### Ghi chú:
 - Không push node_modules lên git (đã add vào .gitignore rồi, đừng xóa)
+
+## Cách dùng sau khi chạy:
+- Vào home, ấn bắt đầu, nghe giọng hướng dẫn
+- Đọc command theo hướng dẫn
+- Muốn quay lại home thì đọc quay lại

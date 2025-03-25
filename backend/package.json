@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -12,11 +12,16 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow/tfjs": "^4.22.0",
     "axios": "^1.8.4",
     "body-parser": "^1.20.3",
+    "canvas": "^3.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "gtts": "^0.2.1",
+    "tesseract.js": "^6.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
