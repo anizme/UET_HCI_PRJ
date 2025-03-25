@@ -11,7 +11,8 @@
 
 ## Cài đặt và chạy BE:
 - cd backend
-- Tạo .env: tạm thời mặc định port, thích thì sửa
+- cd install
+- Sửa .env nếu cần: tạm thời mặc định port, thích thì sửa
 - npm run dev: Chạy server
 
 ### Ghi chú:
