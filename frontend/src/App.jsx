@@ -1,37 +1,62 @@
-import { useState } from 'react';
-import HomeScreen from './screens/HomeScreen';
-import ObjectRecognitionScreen from './screens/ObjectRecognitionScreen';
-import OCRScreen from './screens/OCRScreen';
-import NewsScreen from './screens/NewsScreen';
-import './App.css';
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import OCR from './pages/OCR'
+import ObjectRecognition from './pages/ObjectRecognition'
+import News from './pages/News'
+import Header from './components/Header'
+import Navigation from './components/Navigation'
+import VoiceControl from './components/VoiceControl'
+import AccessibilityTools from './components/AccessibilityTools'
+import { speak } from './services/speechSynthesis'
 
-const App = () => {
-  const [currentScreen, setCurrentScreen] = useState('home');
+export default function App() {
+  const [activePage, setActivePage] = useState('home')
+  const [isListening, setIsListening] = useState(false)
 
-  const handleVoiceCommand = (command) => {
-    console.log('Received command:', command); // Log lệnh nhận được
-    const lowerCommand = command.toLowerCase();
-    if (lowerCommand.includes('nhận diện vật thể')) {
-      setCurrentScreen('object');
-    } else if (lowerCommand.includes('đọc văn bản')) {
-      setCurrentScreen('ocr');
-    } else if (lowerCommand.includes('tin tức')) {
-      setCurrentScreen('news');
-    } else if (lowerCommand.includes('quay lại')) {
-      setCurrentScreen('home');
-    } else {
-      console.log('Command not recognized:', lowerCommand); // Log lệnh không khớp
+  useEffect(() => {
+    // Initial announcement when app loads
+    speak('Trang web hỗ trợ người khiếm thị đã sẵn sàng. Bạn có thể sử dụng giọng nói để điều hướng.')
+  }, [])
+
+  const handleNavigation = (page) => {
+    setActivePage(page)
+    speak(`Đã chuyển đến trang ${getPageName(page)}`)
+  }
+
+  const getPageName = (page) => {
+    switch (page) {
+      case 'home': return 'Trang chủ'
+      case 'ocr': return 'Nhận diện văn bản'
+      case 'object': return 'Nhận diện vật thể'
+      case 'news': return 'Tin tức'
+      default: return ''
     }
-  };
+  }
 
   return (
-    <div className="app">
-      {currentScreen === 'home' && <HomeScreen onVoiceCommand={handleVoiceCommand} />}
-      {currentScreen === 'object' && <ObjectRecognitionScreen onVoiceCommand={handleVoiceCommand} />}
-      {currentScreen === 'ocr' && <OCRScreen onVoiceCommand={handleVoiceCommand} />}
-      {currentScreen === 'news' && <NewsScreen onVoiceCommand={handleVoiceCommand} />}
-    </div>
-  );
-};
+    <Router>
+      <div className="app" aria-live="polite">
+        {/* <Header /> */}
+        <Navigation activePage={activePage} onNavigate={handleNavigation} />
+        <VoiceControl
+          isListening={isListening}
+          setIsListening={setIsListening}
+          onNavigate={handleNavigation}
+        />
+        <AccessibilityTools />
 
-export default App;
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/ocr" element={<OCR />} />
+            <Route path="/object-recognition" element={<ObjectRecognition />} />
+            <Route path="/news" element={<News />} />
+          </Routes>
+        </main>
+
+
+      </div>
+    </Router>
+  )
+}
