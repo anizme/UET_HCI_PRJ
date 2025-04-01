@@ -7,7 +7,7 @@
 ## Cài đặt và chạy FE:
 - cd frontend
 - npm install: Cài đặt dependencies, không push node_modules lên git vì nặng nên tự install các dependencies ở local
-- npm run dev -- --host: Chạy server. Chọn 1 url mà VITE liệt kê Netwwork:... Chép ip vào config.js trong frontend/src. Mục đích là fetch được api của backend
+- npm run dev -- --host: Chạy server. Chọn 1 url mà VITE liệt kê Netwwork:... Chép ip vào BASE_URL trong frontend/src/services/api. Mục đích là fetch được api của backend
 
 ## Cài đặt và chạy BE:
 - cd backend
