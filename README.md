@@ -15,10 +15,12 @@
 - Sửa .env nếu cần: tạm thời mặc định port, thích thì sửa
 - npm run dev: Chạy server
 
-### Ghi chú:
-- Không push node_modules lên git (đã add vào .gitignore rồi, đừng xóa)
-
 ## Cách dùng sau khi chạy:
 - Vào home, ấn bắt đầu, nghe giọng hướng dẫn
 - Đọc command theo hướng dẫn
 - Muốn quay lại home thì đọc quay lại
+
+
+### Ghi chú:
+- Không push node_modules lên git (đã add vào .gitignore rồi, đừng xóa)
+- Hiện tại thì folder screens không có ý nghĩa, nó bị out of date nhưng mà để đấy để khi cần chép code
