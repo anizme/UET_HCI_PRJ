@@ -23,8 +23,16 @@ router.post('/object-recognition', async (req, res) => {
     const model = await cocoSsd.load();
     const predictions = await model.detect(canvas);
 
-    const object = predictions.length > 0 ? predictions[0].class : 'Không nhận diện được';
-    res.json({ object });
+    if (predictions.length > 0) {
+      const topPrediction = predictions[0];
+      res.json({
+        object: topPrediction.class,
+        score: topPrediction.score,
+        bbox: topPrediction.bbox // Bounding box information for position description
+      });
+    } else {
+      res.json({ object: 'Không nhận diện được' });
+    }
   } catch (error) {
     console.error('Object Recognition Error:', error);
     res.status(500).json({ error: 'Error processing image', details: error.message });

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performObjectRecognition } from '../services/api'
+import ImageUploader from '../components/ImageUploader'
+import './ObjectRecognition.css'
 
 export default function ObjectRecognition() {
   const videoRef = useRef(null)
@@ -9,6 +11,7 @@ export default function ObjectRecognition() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [isRealTime, setIsRealTime] = useState(false)
   const intervalRef = useRef(null)
+  const [activeTab, setActiveTab] = useState('upload') // Default to upload tab for testing
 
   useEffect(() => {
     speak('Trang nhận diện vật thể. Hãy bật camera để bắt đầu nhận diện.')
@@ -121,46 +124,67 @@ export default function ObjectRecognition() {
     <div className="object-recognition-page">
       <h2>Nhận diện vật thể</h2>
       
-      <div className="camera-controls">
-        {!stream ? (
-          <button onClick={startCamera}>Bật camera</button>
-        ) : (
-          <button onClick={stopCamera}>Tắt camera</button>
-        )}
-      </div>
-
-      <div className="camera-preview">
-        {stream && <video ref={videoRef} autoPlay playsInline muted />}
-      </div>
-
-      <div className="detection-controls">
+      <div className="recognition-tabs">
         <button 
-          onClick={captureAndDetect} 
-          disabled={isProcessing || !stream}
+          className={activeTab === 'upload' ? 'active-tab' : ''}
+          onClick={() => setActiveTab('upload')}
         >
-          {isProcessing ? 'Đang xử lý...' : 'Nhận diện vật thể'}
+          Tải lên hình ảnh
         </button>
-
-        {!isRealTime ? (
-          <button onClick={startRealTimeDetection} disabled={!stream}>
-            Nhận diện thời gian thực
-          </button>
-        ) : (
-          <button onClick={stopRealTimeDetection}>
-            Dừng nhận diện
-          </button>
-        )}
+        <button 
+          className={activeTab === 'camera' ? 'active-tab' : ''}
+          onClick={() => setActiveTab('camera')}
+        >
+          Sử dụng camera
+        </button>
       </div>
 
-      {objects.length > 0 && (
-        <div className="result-section">
-          <h3>Kết quả nhận diện:</h3>
-          <ul>
-            {objects.map((obj, index) => (
-              <li key={index}>{obj}</li>
-            ))}
-          </ul>
-          <button onClick={readObjects}>Đọc kết quả</button>
+      {activeTab === 'upload' ? (
+        <ImageUploader />
+      ) : (
+        <div className="camera-recognition">
+          <div className="camera-controls">
+            {!stream ? (
+              <button onClick={startCamera}>Bật camera</button>
+            ) : (
+              <button onClick={stopCamera}>Tắt camera</button>
+            )}
+          </div>
+
+          <div className="camera-preview">
+            {stream && <video ref={videoRef} autoPlay playsInline muted />}
+          </div>
+
+          <div className="detection-controls">
+            <button 
+              onClick={captureAndDetect} 
+              disabled={isProcessing || !stream}
+            >
+              {isProcessing ? 'Đang xử lý...' : 'Nhận diện vật thể'}
+            </button>
+
+            {!isRealTime ? (
+              <button onClick={startRealTimeDetection} disabled={!stream}>
+                Nhận diện thời gian thực
+              </button>
+            ) : (
+              <button onClick={stopRealTimeDetection}>
+                Dừng nhận diện
+              </button>
+            )}
+          </div>
+
+          {objects.length > 0 && (
+            <div className="result-section">
+              <h3>Kết quả nhận diện:</h3>
+              <ul>
+                {objects.map((obj, index) => (
+                  <li key={index}>{obj}</li>
+                ))}
+              </ul>
+              <button onClick={readObjects}>Đọc kết quả</button>
+            </div>
+          )}
         </div>
       )}
     </div>
