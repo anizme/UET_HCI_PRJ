@@ -3,6 +3,8 @@ const router = express.Router();
 const tf = require('@tensorflow/tfjs');
 const cocoSsd = require('@tensorflow-models/coco-ssd');
 const { createWorker } = require('tesseract.js');
+const sharp = require('sharp');
+const langdetect = require('langdetect');
 const gTTS = require('gtts');
 const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs').promises; // Thêm fs để xử lý file
@@ -37,12 +39,66 @@ router.post('/ocr', async (req, res) => {
     const { image } = req.body;
     if (!image) return res.status(400).json({ error: 'No image provided' });
 
-    const worker = await createWorker('eng+vie');
+    // Chuyển base64 thành Buffer
     const buffer = Buffer.from(image, 'base64');
-    const { data: { text } } = await worker.recognize(buffer);
+
+    // Xử lý ảnh với Sharp (Grayscale + Tăng độ tương phản)
+    const processedBuffer = await sharp(buffer)
+      .grayscale() // Chuyển ảnh sang grayscale
+      .normalise() // Cải thiện độ tương phản
+      .toBuffer();
+
+    // Khởi tạo worker của Tesseract (ngôn ngữ mặc định là tiếng Anh)
+    const worker = await createWorker('eng');
+    const { data: { text } } = await worker.recognize(processedBuffer);
     await worker.terminate();
 
-    res.json({ text: text.trim() || 'Không tìm thấy văn bản' });
+    // Phát hiện ngôn ngữ từ văn bản nhận diện được bằng langdetect
+    const possibleLang = langdetect.detect(text);
+    console.log(possibleLang);
+
+    // Lọc ra các ngôn ngữ có prob >= 0.35
+    const filteredLangs = possibleLang.filter(l => l.prob >= 0.35);
+
+    // Ngôn ngữ chính và phụ
+    const detectedLang = filteredLangs.length > 0 ? filteredLangs[0].lang : null;
+    const tempDetectedLang = filteredLangs.length > 1 ? filteredLangs[1].lang : null;
+
+    // Map mã ngôn ngữ sang mã Tesseract.js
+    const langMap = {
+      'vi': 'vie', 'en': 'eng', 'fr': 'fra', 'de': 'deu',
+      'es': 'spa', 'zh': 'chi_sim', 'ja': 'jpn', 'ko': 'kor',
+      'ru': 'rus', 'pt': 'por', 'da': 'dan'
+    };
+
+    // Chuyển đổi sang mã Tesseract.js
+    const language = langMap[detectedLang] || 'eng'; // Mặc định là tiếng Anh nếu không tìm thấy
+
+    // Chạy OCR với ngôn ngữ chính
+    const ocrWorker = await createWorker(language);
+    const { data: { text: finalText } } = await ocrWorker.recognize(processedBuffer);
+    await ocrWorker.terminate();
+
+    // Nếu có tempDetectedLang, chạy OCR lần nữa
+    let tempLanguage = null;
+    let tempFinalText = null;
+
+    if (tempDetectedLang) {
+      tempLanguage = langMap[tempDetectedLang] || 'eng'; // Mặc định là tiếng Anh nếu lỗi
+      const tempOcrWorker = await createWorker(tempLanguage);
+      const { data: { text: tempFinalTextResult } } = await tempOcrWorker.recognize(processedBuffer);
+      tempFinalText = tempFinalTextResult.trim();
+      await tempOcrWorker.terminate();
+    }
+
+    // Trả về cả hai kết quả
+    res.json({
+      language: language,
+      text: finalText.trim() || 'Không tìm thấy văn bản',
+      tempLanguage: tempLanguage,
+      tempText: tempFinalText || 'Không có ngôn ngữ phụ'
+    });
+
   } catch (error) {
     console.error('OCR Error:', error);
     res.status(500).json({ error: 'Error processing OCR', details: error.message });
