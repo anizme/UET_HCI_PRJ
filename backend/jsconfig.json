@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "CommonJS",
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "moduleResolution": "node",
+      "baseUrl": ".",
+      "paths": {
+        "*": ["./*"]
+      }
+    },
+    "include": ["./**/*"],
+    "exclude": ["node_modules"]
+  }
