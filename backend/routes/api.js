@@ -132,22 +132,26 @@ router.get('/fetch-news/:channel', async (req, res) => {
   }
 });
 
-router.get('/fetch-news/:channel/:newsIndex', async (req, res) => {
-  const newsIndex = req.params.newsIndex
+router.post('/fetch-news/', async (req, res) => {
+  console.log(req.body)
+  const news = req.body.news
   try {
-    const currentNews = cachedNewsList[newsIndex]
+    const currentNews = news
     const htmlNews = await fetch(currentNews.link).then(response => response.text())
     
 
     const $ = cheerio.load(htmlNews);
+    $('a').each((index, element) => {
+      $(element).removeAttr('href');
+    });
 
-    const parsedHTML = $('.fck_detail p').map((index, element) => `<p>${$(element).html()}</p>`).get();
-    const title = `<title_detail>${currentNews.title}<title_detail>`
+    const parsedHTML = $('.fck_detail p').map((index, element) => `<p>${$(element).html()}</p>`).get().join("");
+    const title = "" //`<title_detail>${currentNews.title}<title_detail>`
     const description = `<p>${currentNews.description}<p>`
     const htmlContent = `${title}${description}${parsedHTML}`
-    res.json({ success: true, news: htmlContent})
+    res.json({title: currentNews.title, content: htmlContent})
   } catch (error) {
-    res.status(500).json({ success: false, message: `Failed to fetch index ${newsIndex} from RSS feed`, error });
+    res.status(500).json({ success: false, message: `Failed to fetch '${news.title}' from RSS feed`, error });
   }
 })
 
