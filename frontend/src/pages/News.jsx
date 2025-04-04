@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
-import { fetchNews } from '../services/api'
+import { fetchHeadlines, fetchNews } from '../services/api'
 
 export default function News() {
   const [news, setNews] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('general')
+  const [selectedCategory, setSelectedCategory] = useState('tin-moi-nhat')
   const [selectedArticle, setSelectedArticle] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isArticleLoading, setIsArticleLoading] = useState(false)
 
   const categories = [
-    { id: 'general', name: 'Tin tổng hợp' },
-    { id: 'technology', name: 'Công nghệ' },
-    { id: 'sports', name: 'Thể thao' },
-    { id: 'health', name: 'Sức khỏe' }
+    { id: 'tin-moi-nhat', name: 'Tin mới nhất' },
+    { id: 'the-gioi', name: 'Thế giới' },
+    { id: 'thoi-su', name: 'Thời sự' },
+    { id: 'the-thao', name: 'Thể thao' },
+    { id: 'cong-nghe', name: 'Công nghệ' },
+    { id: 'giai-tri', name: 'Giải trí' },
+    { id: 'oto-xe-may', name: 'Xe' }
   ]
 
   useEffect(() => {
@@ -25,7 +29,7 @@ export default function News() {
     speak(`Đang tải tin tức về ${getCategoryName(category)}...`)
 
     try {
-      const newsData = await fetchNews(category)
+      const newsData = await fetchHeadlines(category)
       setNews(newsData)
       speak(`Đã tải xong ${newsData.length} tin tức.`)
     } catch (error) {
@@ -47,13 +51,32 @@ export default function News() {
     loadNews(category)
   }
 
-  const handleArticleSelect = (article) => {
+  const handleArticleSelect = async (article) => {
     setSelectedArticle(article)
+    setIsArticleLoading(true)
+    try {
+      const fetchedArticle = await fetchNews(article)
+      if (fetchedArticle) {
+        setSelectedArticle(fetchedArticle)
+      } else {
+        setSelectedArticle({ ...article, content: "Có lỗi xảy ra khi tải tin tức" })
+      }
+    } catch (error) {
+      speak('Có lỗi xảy ra khi tải tin tức.')
+      console.error('News error:', error)
+    } finally {
+      setIsArticleLoading(false)
+    }
     speak(`Đã chọn bài viết: ${article.title}. Nhấn nút đọc để nghe nội dung.`)
   }
 
   const readArticle = () => {
     if (selectedArticle) {
+      const title = selectedArticle.title
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = selectedArticle.content
+      const content = tempDiv.textContent
+      console.log(title, content)
       speak(`${selectedArticle.title}. ${selectedArticle.content}`)
     } else {
       speak('Vui lòng chọn một bài viết trước.')
@@ -104,7 +127,11 @@ export default function News() {
               {selectedArticle && (
                 <>
                   <h3>{selectedArticle.title}</h3>
-                  <p>{selectedArticle.content}</p>
+                  {isArticleLoading ? (
+                    <p>Đang tải tin tức...</p>
+                  ) : (
+                    <div dangerouslySetInnerHTML={{__html: selectedArticle.content}}></div>
+                  )}  
                   <button onClick={readArticle}>Đọc bài viết</button>
                 </>
               )}
