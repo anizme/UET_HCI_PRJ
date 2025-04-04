@@ -14,6 +14,7 @@ export default function OCR() {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const [stream, setStream] = useState(null)
+  const resultSectionRef = useRef(null);
 
   useEffect(() => {
     speak('Trang nhận diện văn bản. Bạn có thể tải lên hình ảnh hoặc chụp ảnh trực tiếp.')
@@ -82,6 +83,9 @@ export default function OCR() {
       setTempText(result.tempText)
       speak(`Kết quả nhận diện: ${result.text}. Ngôn ngữ nhận diện là ${result.language}.`)
       speak(`Đây cũng có thể là ngôn ngữ ${result.tempLanguage}. Bạn có muốn chuyển sang không?`)
+      setTimeout(() => {
+        scrollToResults();
+      }, 300);
     } catch (error) {
       speak('Có lỗi xảy ra khi nhận diện văn bản.')
       console.error('OCR error:', error)
@@ -97,6 +101,15 @@ export default function OCR() {
       speak('Không có văn bản để đọc.')
     }
   }
+
+  const scrollToResults = () => {
+    if (resultSectionRef.current) {
+      resultSectionRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   const switchToTempLanguage = () => {
     setIsUsingTemp(true)
@@ -115,7 +128,7 @@ export default function OCR() {
       <div className="ocr-options">
         <div className="upload-section">
           <button onClick={() => fileInputRef.current.click()}>
-            Tải lên hình ảnh
+            <span>📁</span> Tải lên hình ảnh
           </button>
           <input
             type="file"
@@ -128,11 +141,17 @@ export default function OCR() {
 
         <div className="camera-section">
           {!stream ? (
-            <button onClick={startCamera}>Bật camera</button>
+            <button onClick={startCamera}>
+              <span>📷</span> Bật camera
+            </button>
           ) : (
             <>
-              <button onClick={captureImage}>Chụp ảnh</button>
-              <button onClick={stopCamera}>Tắt camera</button>
+              <button onClick={captureImage}>
+                <span>📸</span> Chụp ảnh
+              </button>
+              <button onClick={stopCamera}>
+                <span>⏹️</span> Tắt camera
+              </button>
             </>
           )}
         </div>
@@ -151,6 +170,12 @@ export default function OCR() {
             <img src={image} alt="Preview" />
           </div>
         )}
+
+        {!image && !stream && (
+          <div className="empty-preview">
+            <p>Tải lên hình ảnh hoặc chụp ảnh để bắt đầu</p>
+          </div>
+        )}
       </div>
 
       <button
@@ -162,28 +187,49 @@ export default function OCR() {
       </button>
 
       {text && (
-        <div className="result-section">
-          <h3>Kết quả:</h3>
-          <div className="text-result">{isUsingTemp ? tempText : text}</div>
-          <div className="language-result">
-            <strong>Ngôn ngữ phát hiện:</strong> {isUsingTemp ? tempLanguage : language}
-          </div>
-
-          {/* Kiểm tra nếu có ngôn ngữ phụ, hiển thị gợi ý chuyển đổi */}
-          {tempLanguage && (
-            <div className="switch-language">
-              {!isUsingTemp ? (
-                <>
-                  <p>Đây cũng có thể là ngôn ngữ <strong>{tempLanguage}</strong>. Bạn có muốn chuyển sang không?</p>
-                  <button onClick={switchToTempLanguage}>Chuyển sang {tempLanguage}</button>
-                </>
-              ) : (
-                <button onClick={switchBackToOriginalLanguage}>Quay lại {language}</button>
+        <div className="result-section" ref={resultSectionRef}>
+          <div className="result-header">
+            <h3>Kết quả nhận diện</h3>
+            <div className="language-badge">
+              <span>Ngôn ngữ: {isUsingTemp ? tempLanguage : language}</span>
+              {tempLanguage && (
+                <div className="switch-language">
+                  {!isUsingTemp ? (
+                    <>
+                      <p>Đây cũng có thể là ngôn ngữ <strong>{tempLanguage}</strong>. Bạn có muốn chuyển sang không?</p>
+                      <button onClick={switchToTempLanguage} className="language-switch-button">
+                        Chuyển sang {tempLanguage}
+                      </button>
+                    </>
+                  ) : (
+                    <button onClick={switchBackToOriginalLanguage} className="language-switch-button">
+                      Quay lại {language}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
-          )}
+          </div>
 
-          <button onClick={() => speak(isUsingTemp ? tempText : text)}>Đọc kết quả</button>
+          <div className="text-result-container">
+            <div className="text-result">
+              {isUsingTemp ? tempText : text}
+            </div>
+            <div className="text-actions">
+              <button
+                onClick={() => speak(isUsingTemp ? tempText : text)}
+                className="text-action-button"
+              >
+                <span>🔊</span> Đọc kết quả
+              </button>
+              <button
+                onClick={() => copyToClipboard(isUsingTemp ? tempText : text)}
+                className="text-action-button"
+              >
+                <span>📋</span> Sao chép
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
