@@ -60,8 +60,18 @@ export default function ObjectRecognition() {
       const imageData = canvas.toDataURL('image/jpeg')
       const result = await performObjectRecognition(imageData)
       
-      setObjects([result.object])
-      speak(`Nhận diện được: ${result.object}`)
+      // Lưu cả đối tượng và mô tả chi tiết
+      setObjects([{
+        name: result.object,
+        description: result.description || `Nhận diện được: ${result.object}`
+      }])
+      
+      // Đọc mô tả chi tiết nếu có
+      if (result.description) {
+        speak(result.description)
+      } else {
+        speak(`Nhận diện được: ${result.object}`)
+      }
     } catch (error) {
       speak('Có lỗi xảy ra khi nhận diện vật thể.')
       console.error('Object recognition error:', error)
@@ -91,11 +101,23 @@ export default function ObjectRecognition() {
         const result = await performObjectRecognition(imageData)
         
         setObjects(prev => {
-          // Only speak if the object is new or different
-          if (prev.length === 0 || prev[0].object !== result.object) {
-            speak(result.object)
+          // Tạo đối tượng mới với tên và mô tả
+          const newObject = {
+            name: result.object,
+            description: result.description || `Nhận diện được: ${result.object}`
           }
-          return [result.object]
+          
+          // Chỉ đọc nếu đối tượng hoặc mô tả thay đổi
+          if (prev.length === 0 || 
+              prev[0].name !== newObject.name || 
+              prev[0].description !== newObject.description) {
+            if (result.description) {
+              speak(result.description)
+            } else {
+              speak(result.object)
+            }
+          }
+          return [newObject]
         })
       } catch (error) {
         console.error('Real-time detection error:', error)
@@ -114,7 +136,9 @@ export default function ObjectRecognition() {
 
   const readObjects = () => {
     if (objects.length > 0) {
-      speak(`Các vật thể nhận diện được: ${objects.join(', ')}`)
+      // Đọc mô tả chi tiết nếu có
+      const descriptions = objects.map(obj => obj.description || `Nhận diện được: ${obj.name}`)
+      speak(descriptions.join('. '))
     } else {
       speak('Không có vật thể nào được nhận diện.')
     }
@@ -179,7 +203,10 @@ export default function ObjectRecognition() {
               <h3>Kết quả nhận diện:</h3>
               <ul>
                 {objects.map((obj, index) => (
-                  <li key={index}>{obj}</li>
+                  <li key={index}>
+                    <strong>{obj.name}</strong>
+                    <p>{obj.description}</p>
+                  </li>
                 ))}
               </ul>
               <button onClick={readObjects}>Đọc kết quả</button>

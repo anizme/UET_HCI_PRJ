@@ -1,41 +1,69 @@
 const express = require('express');
 const router = express.Router();
-const tf = require('@tensorflow/tfjs');
-const cocoSsd = require('@tensorflow-models/coco-ssd');
 const { createWorker } = require('tesseract.js');
 const gTTS = require('gtts');
-const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs').promises; // Thêm fs để xử lý file
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// API Object Recognition
+// Khởi tạo Gemini client
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// Kiểm tra API key
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('GEMINI_API_KEY không được cấu hình trong file .env');
+}
+
+// API Object Recognition sử dụng Gemini Flash API
 router.post('/object-recognition', async (req, res) => {
   try {
     const { image } = req.body;
     if (!image) return res.status(400).json({ error: 'No image provided' });
 
-    const buffer = Buffer.from(image, 'base64');
-    const img = await loadImage(buffer);
-
-    const canvas = createCanvas(img.width, img.height);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-
-    const model = await cocoSsd.load();
-    const predictions = await model.detect(canvas);
-
-    if (predictions.length > 0) {
-      const topPrediction = predictions[0];
-      res.json({
-        object: topPrediction.class,
-        score: topPrediction.score,
-        bbox: topPrediction.bbox // Bounding box information for position description
+    // Kiểm tra API key
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ 
+        error: 'Gemini API key is missing', 
+        details: 'Please configure GEMINI_API_KEY in .env file' 
       });
-    } else {
-      res.json({ object: 'Không nhận diện được' });
     }
+
+    // Khởi tạo model Gemini Flash
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    
+    // Tạo prompt cho Gemini - Mô tả ngắn gọn cho người khiếm thị
+    const prompt = "Hãy mô tả ngắn gọn hình ảnh này bằng tiếng Việt cho người khiếm thị. Chỉ tập trung vào các đối tượng chính và vị trí tương đối của chúng. Mô tả trong 5-6 câu ngắn, đơn giản, dễ hiểu. Chỉ nêu những thông tin quan trọng nhất mà người khiếm thị cần biết để hiểu được nội dung chính của hình ảnh.";
+    
+    // Chuẩn bị dữ liệu hình ảnh
+    const imageData = {
+      inlineData: {
+        data: image,
+        mimeType: "image/jpeg"
+      }
+    };
+    
+    // Gọi Gemini API để phân tích hình ảnh
+    const result = await model.generateContent([prompt, imageData]);
+    const response = await result.response;
+    const detailedDescription = response.text();
+    
+    // Trả về kết quả
+    res.json({
+      object: "Đã phân tích", // Giữ lại để tương thích ngược
+      description: detailedDescription,
+      // Thêm thông tin chi tiết từ Gemini
+      gemini_response: {
+        model: "gemini-1.5-flash"
+      }
+    });
   } catch (error) {
     console.error('Object Recognition Error:', error);
-    res.status(500).json({ error: 'Error processing image', details: error.message });
+    res.status(500).json({ 
+      error: 'Error processing image', 
+      details: error.message,
+      hint: error.message.includes('API key') ? 'Vui lòng kiểm tra GEMINI_API_KEY trong file .env' : undefined
+    });
   }
 });
 

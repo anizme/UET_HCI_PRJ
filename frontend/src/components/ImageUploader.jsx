@@ -66,11 +66,16 @@ export default function ImageUploader() {
   }
 
   const formatDescription = (result) => {
-    if (!result || !result.object) {
+    if (!result) {
       return 'Không nhận diện được vật thể trong hình ảnh.'
     }
     
-    return `Trong hình ảnh có: ${result.object}. Độ chính xác: ${Math.round((result.score || 0) * 100)}%. Vị trí: ở trung tâm hình ảnh.`
+    if (result.description) {
+      return result.description
+    }
+    
+    // Fallback cho trường hợp không có mô tả
+    return 'Không thể tạo mô tả chi tiết cho hình ảnh này.'
   }
 
   const readResult = () => {
