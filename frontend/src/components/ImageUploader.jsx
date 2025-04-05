@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performObjectRecognition } from '../services/api'
+import RecognitionResult from './RecognitionResult'
 import './ImageUploader.css'
 
 export default function ImageUploader() {
@@ -78,14 +79,6 @@ export default function ImageUploader() {
     return 'Không thể tạo mô tả chi tiết cho hình ảnh này.'
   }
 
-  const readResult = () => {
-    if (recognitionResult) {
-      speak(recognitionResult)
-    } else {
-      speak('Chưa có kết quả nhận diện.')
-    }
-  }
-
   return (
     <div className="image-uploader">
       <div className="upload-section">
@@ -117,19 +110,7 @@ export default function ImageUploader() {
         )}
       </div>
 
-      <div className="result-section">
-        <h3>Mô tả môi trường:</h3>
-        <div className="result-frame">
-          {recognitionResult ? (
-            <p>{recognitionResult}</p>
-          ) : (
-            <p className="placeholder-text">Kết quả nhận diện sẽ hiển thị ở đây...</p>
-          )}
-        </div>
-        <button onClick={readResult} disabled={!recognitionResult}>
-          Đọc mô tả
-        </button>
-      </div>
+      <RecognitionResult result={recognitionResult} isProcessing={isProcessing} />
     </div>
   )
 }

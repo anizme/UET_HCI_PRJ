@@ -54,7 +54,7 @@ router.post('/object-recognition', async (req, res) => {
       description: detailedDescription,
       // Thêm thông tin chi tiết từ Gemini
       gemini_response: {
-        model: "gemini-1.5-flash"
+        model: "gemini-2.0-flash"
       }
     });
   } catch (error) {

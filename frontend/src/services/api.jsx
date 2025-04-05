@@ -1,7 +1,25 @@
-const API_BASE_URL = 'http://localhost:5000/api'
+const API_BASE_URL = '/api'
+
+const fetchWithCertificate = async (url, options) => {
+  try {
+    const response = await fetch(url, {
+      ...options,
+      // In development, we need to accept self-signed certificates
+      mode: 'cors',
+      credentials: 'omit'
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    throw error
+  }
+}
 
 export const performOCR = async (imageData) => {
-  const response = await fetch(`${API_BASE_URL}/ocr`, {
+  const response = await fetchWithCertificate(`${API_BASE_URL}/ocr`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -12,7 +30,7 @@ export const performOCR = async (imageData) => {
 }
 
 export const performObjectRecognition = async (imageData) => {
-  const response = await fetch(`${API_BASE_URL}/object-recognition`, {
+  const response = await fetchWithCertificate(`${API_BASE_URL}/object-recognition`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
