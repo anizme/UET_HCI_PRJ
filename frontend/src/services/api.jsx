@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api' // Replace with your backend URL
+const API_BASE_URL = 'http://localhost:5000/api'
 
 export const performOCR = async (imageData) => {
   const response = await fetch(`${API_BASE_URL}/ocr`, {

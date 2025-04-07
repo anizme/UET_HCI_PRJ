@@ -28,13 +28,6 @@ body {
   min-height: 100vh;
 }
 
-/* .app-header {
-  background-color: var(--primary-color);
-  color: var(--contrast-text);
-  padding: 1rem;
-  text-align: center;
-} */
-
 .main-content {
   flex: 1;
   padding: 1rem;
@@ -71,6 +64,22 @@ body {
   gap: 1rem;
 }
 
+/* Thêm style cho thẻ Link */
+.main-navigation a {
+  color: var(--contrast-text);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+}
+
+.main-navigation a.active {
+  background-color: var(--accent-color);
+  border-radius: 4px;
+}
+
+.main-navigation a:hover {
+  background-color: var(--secondary-color);
+}
 
 .main-navigation ul {
   display: flex;
