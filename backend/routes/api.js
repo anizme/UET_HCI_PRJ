@@ -57,18 +57,18 @@ router.post('/object-recognition', async (req, res) => {
 
     // Kiểm tra API key
     if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ 
-        error: 'Gemini API key is missing', 
-        details: 'Please configure GEMINI_API_KEY in .env file' 
+      return res.status(500).json({
+        error: 'Gemini API key is missing',
+        details: 'Please configure GEMINI_API_KEY in .env file'
       });
     }
 
     // Khởi tạo model Gemini Flash
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    
+
     // Tạo prompt cho Gemini - Mô tả ngắn gọn cho người khiếm thị
     const prompt = "Hãy mô tả ngắn gọn hình ảnh này bằng tiếng Việt cho người khiếm thị. Chỉ tập trung vào các đối tượng chính và vị trí tương đối của chúng. Mô tả trong 5-6 câu ngắn, đơn giản, dễ hiểu. Chỉ nêu những thông tin quan trọng nhất mà người khiếm thị cần biết để hiểu được nội dung chính của hình ảnh.";
-    
+
     // Chuẩn bị dữ liệu hình ảnh
     const imageData = {
       inlineData: {
@@ -76,12 +76,12 @@ router.post('/object-recognition', async (req, res) => {
         mimeType: "image/jpeg"
       }
     };
-    
+
     // Gọi Gemini API để phân tích hình ảnh
     const result = await model.generateContent([prompt, imageData]);
     const response = await result.response;
     const detailedDescription = response.text();
-    
+
     // Trả về kết quả
     res.json({
       object: "Đã phân tích", // Giữ lại để tương thích ngược
@@ -93,8 +93,8 @@ router.post('/object-recognition', async (req, res) => {
     });
   } catch (error) {
     console.error('Object Recognition Error:', error);
-    res.status(500).json({ 
-      error: 'Error processing image', 
+    res.status(500).json({
+      error: 'Error processing image',
       details: error.message,
       hint: error.message.includes('API key') ? 'Vui lòng kiểm tra GEMINI_API_KEY trong file .env' : undefined
     });
@@ -107,69 +107,64 @@ router.post('/ocr', async (req, res) => {
     const { image } = req.body;
     if (!image) return res.status(400).json({ error: 'No image provided' });
 
-    // Chuyển base64 thành Buffer
-    const buffer = Buffer.from(image, 'base64');
-
-    // Xử lý ảnh với Sharp (Grayscale + Tăng độ tương phản)
-    const processedBuffer = await sharp(buffer)
-      .grayscale() // Chuyển ảnh sang grayscale
-      .normalise() // Cải thiện độ tương phản
-      .toBuffer();
-
-    // Khởi tạo worker của Tesseract (ngôn ngữ mặc định là tiếng Anh)
-    const worker = await createWorker('eng');
-    const { data: { text } } = await worker.recognize(processedBuffer);
-    await worker.terminate();
-
-    // Phát hiện ngôn ngữ từ văn bản nhận diện được bằng langdetect
-    const possibleLang = langdetect.detect(text);
-    console.log(possibleLang);
-
-    // Lọc ra các ngôn ngữ có prob >= 0.35
-    const filteredLangs = possibleLang.filter(l => l.prob >= 0.35);
-
-    // Ngôn ngữ chính và phụ
-    const detectedLang = filteredLangs.length > 0 ? filteredLangs[0].lang : null;
-    const tempDetectedLang = filteredLangs.length > 1 ? filteredLangs[1].lang : null;
-
-    // Map mã ngôn ngữ sang mã Tesseract.js
-    const langMap = {
-      'vi': 'vie', 'en': 'eng', 'fr': 'fra', 'de': 'deu',
-      'es': 'spa', 'zh': 'chi_sim', 'ja': 'jpn', 'ko': 'kor',
-      'ru': 'rus', 'pt': 'por', 'da': 'dan'
-    };
-
-    // Chuyển đổi sang mã Tesseract.js
-    const language = langMap[detectedLang] || 'eng'; // Mặc định là tiếng Anh nếu không tìm thấy
-
-    // Chạy OCR với ngôn ngữ chính
-    const ocrWorker = await createWorker(language);
-    const { data: { text: finalText } } = await ocrWorker.recognize(processedBuffer);
-    await ocrWorker.terminate();
-
-    // Nếu có tempDetectedLang, chạy OCR lần nữa
-    let tempLanguage = null;
-    let tempFinalText = null;
-
-    if (tempDetectedLang) {
-      tempLanguage = langMap[tempDetectedLang] || 'eng'; // Mặc định là tiếng Anh nếu lỗi
-      const tempOcrWorker = await createWorker(tempLanguage);
-      const { data: { text: tempFinalTextResult } } = await tempOcrWorker.recognize(processedBuffer);
-      tempFinalText = tempFinalTextResult.trim();
-      await tempOcrWorker.terminate();
+    // Kiểm tra API key
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({
+        error: 'Gemini API key is missing',
+        details: 'Please configure GEMINI_API_KEY in .env file'
+      });
     }
 
-    // Trả về cả hai kết quả
-    res.json({
-      language: language,
-      text: finalText.trim() || 'Không tìm thấy văn bản',
-      tempLanguage: tempLanguage,
-      tempText: tempFinalText || 'Không có ngôn ngữ phụ'
-    });
+    // Khởi tạo model Gemini Flash
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
+    // Tạo prompt cho Gemini - Mô tả ngắn gọn cho người khiếm thị
+    const prompt = "Phân tích hình ảnh và trả về: 1) Ngôn ngữ được sử dụng trong văn bản (ví dụ: vietnamese, english, v.v.), 2) Nội dung đầy đủ của văn bản theo ngôn ngữ đó. Hãy phản hồi theo cấu trúc 'LANGUAGE: [tên ngôn ngữ]\\n\\nCONTENT: [nội dung văn bản]'";
+
+    // Chuẩn bị dữ liệu hình ảnh
+    const imageData = {
+      inlineData: {
+        data: image,
+        mimeType: "image/jpeg"
+      }
+    };
+
+    const result = await model.generateContent([prompt, imageData]);
+    const response = await result.response;
+    const responseText = response.text();
+
+    // Phân tích kết quả để tách ngôn ngữ và nội dung
+    let language = "unknown";
+    let content = responseText;
+
+    // Tìm phần LANGUAGE và CONTENT từ phản hồi
+    const languageMatch = responseText.match(/LANGUAGE:\s*(.*?)(?=\n\n|\n|$)/i);
+    const contentMatch = responseText.match(/CONTENT:\s*([\s\S]*?)$/i);
+
+    if (languageMatch && languageMatch[1]) {
+      language = languageMatch[1].trim();
+    }
+
+    if (contentMatch && contentMatch[1]) {
+      content = contentMatch[1].trim();
+    }
+
+    // Trả về kết quả
+    res.json({
+      description: content,
+      language: language,
+      // Thêm thông tin chi tiết từ Gemini
+      gemini_response: {
+        model: "gemini-2.0-flash"
+      }
+    });
   } catch (error) {
     console.error('OCR Error:', error);
-    res.status(500).json({ error: 'Error processing OCR', details: error.message });
+    res.status(500).json({
+      error: 'Error processing image',
+      details: error.message,
+      hint: error.message.includes('API key') ? 'Vui lòng kiểm tra GEMINI_API_KEY trong file .env' : undefined
+    });
   }
 });
 
@@ -230,7 +225,7 @@ router.post('/fetch-news/', async (req, res) => {
   try {
     const currentNews = news
     const htmlNews = await fetch(currentNews.link).then(response => response.text())
-    
+
 
     const $ = cheerio.load(htmlNews);
     $('a').each((index, element) => {
@@ -241,7 +236,7 @@ router.post('/fetch-news/', async (req, res) => {
     const title = "" //`<title_detail>${currentNews.title}<title_detail>`
     const description = `<p>${currentNews.description}<p>`
     const htmlContent = `${title}${description}${parsedHTML}`
-    res.json({title: currentNews.title, content: htmlContent})
+    res.json({ title: currentNews.title, content: htmlContent })
   } catch (error) {
     res.status(500).json({ success: false, message: `Failed to fetch '${news.title}' from RSS feed`, error });
   }
