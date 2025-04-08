@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { speak } from '../services/speechSynthesis';
+import './AccessibilityTools.css';
 
 export default function AccessibilityTools() {
   const [fontSize, setFontSize] = useState(16);

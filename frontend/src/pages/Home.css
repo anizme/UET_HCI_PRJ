@@ -52,14 +52,4 @@
       text-align: center;
       width: 100%;
     }
-  
-    .nav-links {
-      width: 100%;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-  
-    .nav-links li {
-      margin: 0.2rem;
-    }
   }

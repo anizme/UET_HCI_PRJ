@@ -1,0 +1,14 @@
+@import url('../styles/variables.css');
+
+.news-content {
+    display: flex;
+    gap: 2rem;
+}
+
+.news-list {
+    flex: 1;
+}
+
+.article-view {
+    flex: 2;
+}
