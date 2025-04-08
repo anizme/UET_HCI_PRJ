@@ -99,7 +99,7 @@
 
 .text-result {
   background-color: #fff;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--bg-color-light);
   border-radius: 6px;
   padding: 1.2rem;
   min-height: 100px;

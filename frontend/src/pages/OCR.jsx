@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import OCRImageUploader from '../components/OCRImageUploader'
 import OCRCameraDetection from '../components/OCRCameraDetection'
-import './OCR.css'
+// import './OCR.css'
 
 
 export default function OCR() {
