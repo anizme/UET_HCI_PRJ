@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { fetchHeadlines, fetchNews } from '../services/api'
+import './News.css'
 
 export default function News() {
   const [news, setNews] = useState([])
@@ -8,6 +9,8 @@ export default function News() {
   const [selectedArticle, setSelectedArticle] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isArticleLoading, setIsArticleLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   const categories = [
     { id: 'tin-moi-nhat', name: 'Tin mới nhất' },
@@ -19,8 +22,18 @@ export default function News() {
     { id: 'oto-xe-may', name: 'Xe' }
   ]
 
+  useEffect(() => {
+    loadNews(selectedCategory)
+  }, [selectedCategory])
+
+  const getCategoryName = (categoryId) => {
+    const category = categories.find(cat => cat.id === categoryId)
+    return category ? category.name : ''
+  }
+
   const loadNews = async (category) => {
     setIsLoading(true)
+    setCurrentPage(1)
     speak(`Đang tải tin tức về ${getCategoryName(category)}...`)
 
     try {
@@ -35,20 +48,15 @@ export default function News() {
     }
   }
 
-  const getCategoryName = (categoryId) => {
-    const category = categories.find(cat => cat.id === categoryId)
-    return category ? category.name : ''
-  }
-
   const handleCategoryChange = (category) => {
     setSelectedCategory(category)
     setSelectedArticle(null)
-    loadNews(category)
   }
 
   const handleArticleSelect = async (article) => {
     setSelectedArticle(article)
     setIsArticleLoading(true)
+
     try {
       const fetchedArticle = await fetchNews(article)
       if (fetchedArticle) {
@@ -62,19 +70,38 @@ export default function News() {
     } finally {
       setIsArticleLoading(false)
     }
+
     speak(`Đã chọn bài viết: ${article.title}. Nhấn nút đọc để nghe nội dung.`)
   }
 
   const readArticle = () => {
     if (selectedArticle) {
-      const title = selectedArticle.title
       const tempDiv = document.createElement('div')
       tempDiv.innerHTML = selectedArticle.content
       const content = tempDiv.textContent
-      console.log(title, content)
-      speak(`${selectedArticle.title}. ${selectedArticle.content}`)
+      speak(`${selectedArticle.title}. ${content}`)
     } else {
       speak('Vui lòng chọn một bài viết trước.')
+    }
+  }
+
+  // Phân trang
+  const totalPages = Math.ceil(news.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedNews = news.slice(startIndex, endIndex)
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1)
+      speak(`Chuyển sang trang ${currentPage + 1}`)
+    }
+  }
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1)
+      speak(`Quay lại trang ${currentPage - 1}`)
     }
   }
 
@@ -105,7 +132,7 @@ export default function News() {
             <div className="news-list">
               <h3>Danh sách tin tức:</h3>
               <ul>
-                {news.map((item, index) => (
+                {paginatedNews.map((item, index) => (
                   <li key={index}>
                     <button
                       onClick={() => handleArticleSelect(item)}
@@ -116,6 +143,18 @@ export default function News() {
                   </li>
                 ))}
               </ul>
+
+              {news.length > itemsPerPage && (
+                <div className="pagination-controls">
+                  <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                    Trang trước
+                  </button>
+                  <span>Trang {currentPage} / {totalPages}</span>
+                  <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                    Trang sau
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="article-view">
@@ -125,8 +164,8 @@ export default function News() {
                   {isArticleLoading ? (
                     <p>Đang tải tin tức...</p>
                   ) : (
-                    <div dangerouslySetInnerHTML={{__html: selectedArticle.content}}></div>
-                  )}  
+                    <div dangerouslySetInnerHTML={{ __html: selectedArticle.content }}></div>
+                  )}
                   <button onClick={readArticle}>Đọc bài viết</button>
                 </>
               )}
