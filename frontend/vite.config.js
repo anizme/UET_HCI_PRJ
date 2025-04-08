@@ -12,7 +12,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'https://192.168.2.76:5000',
+        target: 'https://10.11.15.84:5000',
         changeOrigin: true,
         secure: false, // This allows self-signed certificates
       }

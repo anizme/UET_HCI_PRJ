@@ -24,3 +24,7 @@
 ### Ghi chú:
 - Không push node_modules lên git (đã add vào .gitignore rồi, đừng xóa)
 - Hiện tại thì folder screens không có ý nghĩa, nó bị out of date nhưng mà để đấy để khi cần chép code
+- Setup api key: 
+    - Vào commit "feat: support capturing image through camera, set up ssl" ở nhánh dev_object_recognition -> Tạo 2 file localhost-key.pem và localhost.pem tương ứng ở frontend. 
+    - Thêm file .env ở backend và pase dòng GEMINI_API vào (trong nhóm mes)
+    - Bật cmd -> ipconfig -> copy IPV4 Address của Wireless LAN adapter Wi-Fi rồi pase vào vite.config.js ở frontend (phần proxy target)
