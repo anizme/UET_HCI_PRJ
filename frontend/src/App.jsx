@@ -8,6 +8,7 @@ import Navigation from './components/Navigation'
 import VoiceControl from './components/VoiceControl'
 import AccessibilityTools from './components/AccessibilityTools'
 import { speak, cancelSpeech, initializeSpeechSynthesis } from './services/speechSynthesis';
+import './App.css'
 
 function NavigationWrapper({ onNavigate }) {
   const location = useLocation()

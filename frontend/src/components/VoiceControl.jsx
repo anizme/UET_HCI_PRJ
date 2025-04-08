@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { startListening, stopListening } from '../services/voiceRecognition'
 import { speak } from '../services/speechSynthesis'
+import './VoiceControl.css'
 
 export default function VoiceControl({ isListening, setIsListening, onNavigate }) {
   const [voiceCommand, setVoiceCommand] = useState('')

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { speak, initializeSpeechSynthesis } from '../services/speechSynthesis';
+import './Home.css';
 
 export default function Home() {
 

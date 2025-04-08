@@ -1,0 +1,62 @@
+@import url(../styles/variables.css);
+
+.main-navigation {
+    background-color: var(--primary-color);
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.site-title {
+    color: var(--contrast-text);
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 2rem;
+    padding: 0 1rem;
+}
+
+.site-title:focus {
+    cursor: pointer;
+}
+
+/* Thêm style cho thẻ Link */
+.main-navigation a {
+    color: var(--contrast-text);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+}
+
+.main-navigation a.active {
+    background-color: var(--accent-color);
+    border-radius: 4px;
+}
+
+.main-navigation a:hover {
+    background-color: var(--secondary-color);
+}
+
+.main-navigation ul {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.main-navigation button {
+    background: none;
+    border: none;
+    color: var(--contrast-text);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.main-navigation button.active {
+    background-color: var(--accent-color);
+    border-radius: 4px;
+}

@@ -1,0 +1,19 @@
+@import url(../styles/variables.css);
+
+.voice-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-color-light);
+}
+
+.voice-control button {
+    background-color: var(--accent-color);
+    font-size: 1.2rem;
+    color: white;
+    border: none;
+    padding: 0.5rem 2rem;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}

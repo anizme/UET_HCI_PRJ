@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performOCR } from '../services/api'
+import './OCR.css'
 
 export default function OCR() {
   const [image, setImage] = useState(null)

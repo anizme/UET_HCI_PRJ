@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { cancelSpeech, speak } from '../services/speechSynthesis'
 import { Link, useLocation } from 'react-router-dom'
+import './Navigation.css'
 
 export default function Navigation() {
   const location = useLocation()
