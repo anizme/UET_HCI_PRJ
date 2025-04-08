@@ -22,42 +22,38 @@ export const performObjectRecognition = async (imageData) => {
   return response.json()
 }
 
-export const fetchNews = async (category) => {
+export const fetchHeadlines = async (category) => {
   // In a real app, this would call your backend API
   // For now, we'll mock some data
   return new Promise((resolve) => {
-    setTimeout(() => {
-      const mockNews = {
-        general: [
-          {
-            title: 'Tin tổng hợp 1',
-            content: 'Nội dung tin tổng hợp số 1. Đây là nội dung mẫu cho tin tức tổng hợp.'
-          },
-          {
-            title: 'Tin tổng hợp 2',
-            content: 'Nội dung tin tổng hợp số 2. Đây là nội dung mẫu cho tin tức tổng hợp.'
-          }
-        ],
-        technology: [
-          {
-            title: 'Công nghệ mới',
-            content: 'Một công nghệ mới vừa được phát minh có thể thay đổi thế giới.'
-          }
-        ],
-        sports: [
-          {
-            title: 'Kết quả bóng đá',
-            content: 'Đội tuyển Việt Nam giành chiến thắng trong trận đấu vừa qua.'
-          }
-        ],
-        health: [
-          {
-            title: 'Sức khỏe cộng đồng',
-            content: 'Các chuyên gia khuyến cáo về việc giữ gìn sức khỏe trong mùa dịch.'
-          }
-        ]
-      }
-      resolve(mockNews[category] || [])
+    setTimeout(async () => {
+      const response = await fetch(`${API_BASE_URL}/fetch-news/${category}`, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const newsList = (await response.json())["news"]
+      console.log(newsList)
+      resolve(newsList || [])
+    }, 1000)
+  })
+}
+
+export const fetchNews = async (news) => {
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const response = await fetch(`${API_BASE_URL}/fetch-news/`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "news": news
+        }),
+      })
+      const newsContent = await response.json()
+      resolve(newsContent || null)
     }, 1000)
   })
 }

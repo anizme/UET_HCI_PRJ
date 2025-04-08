@@ -9,6 +9,38 @@ const gTTS = require('gtts');
 const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs').promises; // Thêm fs để xử lý file
 
+const rss_parser = require('rss-parser')
+const rssParser = new rss_parser()
+const cheerio = require('cheerio');
+// News list
+let cachedNewsList = []
+
+const newsTopics = [
+  "tin-moi-nhat",
+  "the-gioi",
+  "thoi-su",
+  "kinh-doanh",
+  "startup",
+  "giai-tri",
+  "the-thao",
+  "phap-luat",
+  "giao-duc",
+  "tin-moi-nhat",
+  "tin-noi-bat",
+  "suc-khoe",
+  "gia-dinh",
+  "du-lich",
+  "khoa-hoc",
+  "cong-nghe",
+  "oto-xe-may",
+  "y-kien",
+  "tam-su",
+  "cuoi",
+  "tin-xem-nhieu"
+]
+
+
+
 // API Object Recognition
 router.post('/object-recognition', async (req, res) => {
   try {
@@ -136,5 +168,47 @@ router.post('/tts', async (req, res) => {
     res.status(500).json({ error: 'Error generating audio', details: error.message });
   }
 });
+
+// Lấy tin tức từ vne, chuyển về danh sách các tin theo tên và index
+router.get('/fetch-news/:channel', async (req, res) => {
+  const channel = req.params.channel || 'tin-moi-nhat'
+  try {
+    const feed = await rssParser.parseURL(`https://vnexpress.net/rss/${channel}.rss`);
+    cachedNewsList = feed.items.map((item, index) => ({
+      index: index,
+      title: item.title,
+      link: item.link,
+      pubDate: item.pubDate,
+      description: item.contentSnippet,
+      channel: channel
+    }));
+    res.json({ success: true, news: cachedNewsList });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch RSS feed', error });
+  }
+});
+
+router.post('/fetch-news/', async (req, res) => {
+  console.log(req.body)
+  const news = req.body.news
+  try {
+    const currentNews = news
+    const htmlNews = await fetch(currentNews.link).then(response => response.text())
+    
+
+    const $ = cheerio.load(htmlNews);
+    $('a').each((index, element) => {
+      $(element).removeAttr('href');
+    });
+
+    const parsedHTML = $('.fck_detail p').map((index, element) => `<p>${$(element).html()}</p>`).get().join("");
+    const title = "" //`<title_detail>${currentNews.title}<title_detail>`
+    const description = `<p>${currentNews.description}<p>`
+    const htmlContent = `${title}${description}${parsedHTML}`
+    res.json({title: currentNews.title, content: htmlContent})
+  } catch (error) {
+    res.status(500).json({ success: false, message: `Failed to fetch '${news.title}' from RSS feed`, error });
+  }
+})
 
 module.exports = router;
