@@ -28,6 +28,7 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
       speak('Đang lắng nghe...')
       startListening(handleVoiceCommand)
     } else {
+      speak('Đã dừng lắng nghe.')
       stopListening()
     }
 

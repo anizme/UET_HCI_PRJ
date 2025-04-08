@@ -1,12 +1,7 @@
 import { useEffect } from 'react';
-import { speak } from '../services/speechSynthesis';
+import { speak, initializeSpeechSynthesis } from '../services/speechSynthesis';
 
 export default function Home() {
-  useEffect(() => {
-    speak('Chào mừng bạn đến với ứng dụng hỗ trợ người khiếm thị. ' +
-          'Bạn có thể sử dụng giọng nói để điều hướng giữa các trang: ' +
-          'Trang chủ, Nhận diện văn bản, Nhận diện vật thể, và Tin tức.');
-  }, []);
 
   return (
     <div className="home-page">

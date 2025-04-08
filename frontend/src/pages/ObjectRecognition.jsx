@@ -7,10 +7,6 @@ import './ObjectRecognition.css'
 export default function ObjectRecognition() {
   const [activeTab, setActiveTab] = useState('upload')
 
-  useEffect(() => {
-    speak('Trang nhận diện vật thể. Bạn có thể tải lên hình ảnh hoặc chụp ảnh trực tiếp.')
-  }, [])
-
   return (
     <div className="object-recognition-page">
       <h2>Nhận diện vật thể</h2>

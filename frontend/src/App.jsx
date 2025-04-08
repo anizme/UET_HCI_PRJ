@@ -7,13 +7,13 @@ import News from './pages/News'
 import Navigation from './components/Navigation'
 import VoiceControl from './components/VoiceControl'
 import AccessibilityTools from './components/AccessibilityTools'
-import { speak } from './services/speechSynthesis'
+import { speak, cancelSpeech, initializeSpeechSynthesis } from './services/speechSynthesis';
 
 function NavigationWrapper({ onNavigate }) {
   const location = useLocation()
-  
+
   const getActivePage = () => {
-    switch(location.pathname) {
+    switch (location.pathname) {
       case '/ocr': return 'ocr'
       case '/object-recognition': return 'object'
       case '/news': return 'news'
@@ -22,7 +22,7 @@ function NavigationWrapper({ onNavigate }) {
   }
 
   return (
-    <Navigation 
+    <Navigation
       activePage={getActivePage()}
       onNavigate={onNavigate}
     />
@@ -33,13 +33,27 @@ export default function App() {
   const [isListening, setIsListening] = useState(false)
   const navigate = useNavigate()
 
+  const location = useLocation();
+
   useEffect(() => {
-    speak('Xai ly đã sẵn sàng. Bạn có thể sử dụng giọng nói để điều hướng.')
-  }, [])
+    initializeSpeechSynthesis().then(() => {
+      const pathname = location.pathname;
+      cancelSpeech();
+      if (pathname === '/') {
+        speak('Trang chủ.');
+      } else if (pathname === '/ocr') {
+        speak('Trang nhận diện văn bản.');
+      } else if (pathname === '/object-recognition') {
+        speak('Trang nhận diện vật thể.');
+      } else if (pathname === '/news') {
+        speak('Trang tin tức.');
+      }
+    });
+  }, [location.pathname]);
 
   const handleNavigation = (page) => {
     let path = '/'
-    switch(page) {
+    switch (page) {
       case 'ocr': path = '/ocr'; break
       case 'object': path = '/object-recognition'; break
       case 'news': path = '/news'; break

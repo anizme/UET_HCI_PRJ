@@ -16,9 +16,21 @@ export default function OCR() {
   const [stream, setStream] = useState(null)
   const resultSectionRef = useRef(null);
 
-  useEffect(() => {
-    speak('Trang nhận diện văn bản. Bạn có thể tải lên hình ảnh hoặc chụp ảnh trực tiếp.')
-  }, [])
+  // useEffect(() => {
+  //   speak('Trang nhận diện văn bản. Bạn có thể tải lên hình ảnh hoặc chụp ảnh trực tiếp.')
+  // }, [])
+  // useEffect(() => {
+  //   const handleInteraction = () => {
+  //     speak('Trang nhận diện văn bản. Bạn có thể tải lên hình ảnh hoặc chụp ảnh trực tiếp.')
+  //     window.removeEventListener('pointerdown', handleInteraction)
+  //   }
+  
+  //   window.addEventListener('pointerdown', handleInteraction)
+  
+  //   return () => {
+  //     window.removeEventListener('pointerdown', handleInteraction)
+  //   }
+  // }, [])
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]

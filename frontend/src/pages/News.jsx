@@ -19,11 +19,6 @@ export default function News() {
     { id: 'oto-xe-may', name: 'Xe' }
   ]
 
-  useEffect(() => {
-    speak('Trang tin tức. Bạn có thể chọn danh mục tin tức bạn quan tâm.')
-    loadNews(selectedCategory)
-  }, [])
-
   const loadNews = async (category) => {
     setIsLoading(true)
     speak(`Đang tải tin tức về ${getCategoryName(category)}...`)

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { speak } from '../services/speechSynthesis'
+import { cancelSpeech, speak } from '../services/speechSynthesis'
 import { Link, useLocation } from 'react-router-dom'
 
 export default function Navigation() {
@@ -17,13 +17,16 @@ export default function Navigation() {
     return navItems.find(item => item.path === location.pathname)?.id || 'home'
   }
 
-  const handleItemFocus = (label) => {
-    speak(label)
-  }
-
   return (
     <nav className="main-navigation" aria-label="Main navigation">
-      <div className="site-title" tabIndex="0" onFocus={() => speak('SIGHTLY - Trang web hỗ trợ người khiếm thị')}>
+      <div className="site-title" tabIndex="0" onFocus={() => {
+        cancelSpeech()
+        speak('Chào mừng bạn đến với Xai ly. ' +
+          'Bạn có thể sử dụng giọng nói để điều hướng giữa các trang: ' +
+          'Trang chủ, Nhận diện văn bản, Nhận diện vật thể, và Tin tức.'
+        )
+      }
+      }>
         <Link to="/">SIGHTLY</Link>
       </div>
       <ul>
@@ -32,7 +35,6 @@ export default function Navigation() {
             <Link
               to={item.path}
               className={getActivePage() === item.id ? 'active' : ''}
-              onFocus={() => handleItemFocus(item.label)}
               aria-current={getActivePage() === item.id ? 'page' : null}
             >
               {item.label}
