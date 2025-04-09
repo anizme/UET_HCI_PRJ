@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performOCR } from '../services/api'
 import OCRResult from './OCRResult'
-import './OCRImageUploader.css'
+import './ImageUploader.css'
 
 export default function OCRImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null)
@@ -71,10 +71,10 @@ export default function OCRImageUploader() {
           type="file" 
           accept="image/*" 
           onChange={handleImageChange} 
-          id="ocr-image-input"
+          id="image-input"
           aria-label="Chọn hình ảnh để nhận diện văn bản"
         />
-        <label htmlFor="ocr-image-input" className="file-input-label">
+        <label htmlFor="image-input" className="file-input-label">
           Chọn hình ảnh
         </label>
         

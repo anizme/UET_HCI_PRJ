@@ -25,7 +25,7 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--bg-color-light);
+    border-bottom: 1px solid var(--bg-color-border);
 }
 
 .category-buttons button {
@@ -57,7 +57,7 @@
 /* Bên trái: danh sách bài viết */
 .news-list {
     flex: 1;
-    border-right: 1px solid var(--bg-color-light);
+    border-right: 1px solid var(--bg-color-border);
     padding-right: 1rem;
 }
 
@@ -80,7 +80,7 @@
     padding: 0.5rem;
     background-color: white;
     color: var(--text-color);
-    border: 1px solid var(--bg-color-light);
+    border: 1px solid var(--bg-color-border);
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -137,7 +137,7 @@
 .article-view div {
     background-color: white;
     padding: 1rem;
-    border: 1px solid var(--bg-color-light);
+    border: 1px solid var(--bg-color-border);
     border-radius: 4px;
     max-height: 500px;
     overflow-y: auto;

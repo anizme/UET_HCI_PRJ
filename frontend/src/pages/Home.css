@@ -1,55 +1,30 @@
-
 /* Home Page Styles */
 .home-page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
-  
-  .welcome-message {
-    background-color: var(--bg-color-over);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-  }
-  
-  .feature-list {
-    margin: 1rem 0;
-    padding-left: 1.5rem;
-  }
-  
-  .feature-list li {
-    margin-bottom: 0.8rem;
-  }
-  
-  .quick-actions {
-    background-color: var(--bg-color-over);
-    padding: 1.5rem;
-    border-radius: 8px;
-  }
-  
-  .voice-commands ul {
-    margin-top: 0.5rem;
-    padding-left: 1.5rem;
-  }
-  
-  .voice-commands li {
-    margin-bottom: 0.5rem;
-  }
-  
-  @media (max-width: 768px) {
-    .main-navigation {
-      flex-direction: column;
-      padding: 0.5rem;
-    }
-  
-    .voice-control {
-      justify-content: center;
-    }
-  
-    .site-title {
-      margin: 0.5rem 0;
-      text-align: center;
-      width: 100%;
-    }
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.welcome-message {
+  background-color: var(--bg-color-over);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.feature-list {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.feature-list li {
+  margin-bottom: 0.8rem;
+}
+
+.quick-actions {
+  background-color: var(--bg-color-over);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+

@@ -73,10 +73,9 @@ button:hover {
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background-color: var(--bg-color-dark);
   cursor: not-allowed;
 }
-
 
 
 

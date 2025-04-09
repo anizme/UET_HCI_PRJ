@@ -2,61 +2,210 @@
 
 .main-navigation {
     background-color: var(--primary-color);
-    padding: 0.8rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 100;
+    height: 4.5rem;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
 
-.site-title {
-    color: var(--contrast-text);
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-right: 2rem;
-    padding: 0 1rem;
-}
-
-.site-title:focus {
-    cursor: pointer;
-}
-
-/* Thêm style cho thẻ Link */
 .main-navigation a {
     color: var(--contrast-text);
     text-decoration: none;
     padding: 0.5rem 1rem;
-    display: inline-block;
+    transition: all 0.3s ease;
 }
 
-.main-navigation a.active {
+.site-title {
+    padding-left: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.site-title a {
+    color: var(--contrast-text);
+}
+
+.site-title:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.nav-items {
+    font-size: 1.2rem;
+    height: 100%;
+}
+
+.nav-items ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.nav-items li {
+    height: 100%;
+}
+
+.nav-items a {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-items a.active {
     background-color: var(--accent-color);
-    border-radius: 4px;
+    font-weight: bold;
 }
 
-.main-navigation a:hover {
+.nav-items a:hover:not(.active) {
     background-color: var(--secondary-color);
 }
 
-.main-navigation ul {
-    display: flex;
-    list-style: none;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.main-navigation button {
+/* Hamburger menu styles */
+.menu-toggle {
+    display: none;
     background: none;
     border: none;
-    color: var(--contrast-text);
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     cursor: pointer;
-    font-size: 1rem;
 }
 
-.main-navigation button.active {
-    background-color: var(--accent-color);
-    border-radius: 4px;
+.hamburger {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: var(--contrast-text);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    left: 0; /* Đảm bảo căn trái chính xác */
+    width: 100%; 
+    height: 3px; 
+    background: var(--contrast-text);
+    transition: all 0.3s ease;
+}
+
+.hamburger::before {
+    top: -8px;
+}
+
+.hamburger::after {
+    bottom: -8px;
+}
+
+.nav-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-navigation {
+        flex-direction: column;
+        height: auto;
+        padding: 0;
+    }
+    
+    .site-title {
+        padding: 0.5rem 1rem;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .nav-items {
+        display: none;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .nav-items.open {
+        display: block;
+        background-color: var(--primary-color);
+    }
+    
+    .nav-items ul {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .nav-items li {
+        width: 100%;
+        border-top: 1px solid var(--contrast-text);
+    }
+    
+    .nav-items a {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 1rem 1.5rem;
+    }
+
+    /* Hamburger animation when open */
+    .menu-toggle[aria-expanded="true"] .hamburger {
+        background: transparent;
+    }
+
+    .menu-toggle[aria-expanded="true"] .hamburger::before {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+
+    .menu-toggle[aria-expanded="true"] .hamburger::after {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    .site-title {
+        font-size: 1.5rem;
+    }
+    
+    .nav-items {
+        font-size: 0.9rem;
+    }
+    
+    .nav-items a {
+        padding: 0.8rem 1rem;
+    }
+
+    .hamburger {
+        width: 20px;
+        height: 2px;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+        height: 2px;
+    }
+
+    .hamburger::before {
+        top: -6px;
+    }
+
+    .hamburger::after {
+        bottom: -6px;
+    }
 }
