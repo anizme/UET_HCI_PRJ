@@ -88,7 +88,7 @@
     text-align: left;
     padding: 0.5rem;
     font-size: 1rem;
-    background-color: white;
+    background-color: var(--bg-color-over);
     color: var(--text-color);
     border: 1px solid var(--bg-color-border);
     border-radius: 4px;
@@ -97,7 +97,7 @@
 }
 
 .news-list button:hover {
-    background-color: #eee;
+    background-color: var(--bg-color-light);
 }
 
 .news-list .selected {
@@ -146,7 +146,7 @@
 }
 
 .article-view div {
-    background-color: white;
+    background-color: var(--bg-color-over);
     padding: 1rem;
     border: 1px solid var(--bg-color-border);
     border-radius: 4px;

@@ -78,6 +78,7 @@ textarea:focus {
     --secondary-color: #166088;
     --bg-color-over: #333;
     --bg-color-border: #444;
+    --bg-color-light: #555;
 }
 
 
