@@ -37,37 +37,46 @@ export const initializeSpeechSynthesis = () => {
 };
 
 export const speak = (text, lang = 'vi-VN') => {
-  if (!synth) {
-    console.warn('TTS không được hỗ trợ trên trình duyệt này');
-    return;
-  }
-
-  if (!userInteracted) {
-    console.log('Đợi người dùng tương tác trước khi đọc...');
-    return;
-  }
-
-  if (synth.speaking) {
-    synth.cancel(); // tránh bị "interrupted"
-    setTimeout(() => speak(text, lang), 250); // delay nhẹ
-    return;
-  }
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-
-  utterance.onerror = (event) => {
-    if (event.error !== 'interrupted') {
-      console.error('Speech synthesis error:', event);
+  return new Promise((resolve) => {
+    if (!synth) {
+      console.warn('TTS không được hỗ trợ trên trình duyệt này');
+      resolve();
+      return;
     }
-  };
 
-  utterance.onstart = () => {
-    console.log('[TTS] Đang đọc:', text);
-  };
+    if (!userInteracted) {
+      console.log('Đợi người dùng tương tác trước khi đọc...');
+      resolve();
+      return;
+    }
 
-  if (synth.paused) synth.resume();
-  synth.speak(utterance);
+    if (synth.speaking) {
+      synth.cancel(); // tránh bị "interrupted"
+      setTimeout(() => speak(text, lang).then(resolve), 250)
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+
+    utterance.onerror = (event) => {
+      if (event.error !== 'interrupted') {
+        console.error('Speech synthesis error:', event);
+      }
+      resolve();
+    };
+
+    utterance.onstart = () => {
+      console.log('[TTS] Đang đọc:', text);
+    };
+
+    utterance.onend = () => {
+      resolve();
+    };
+
+    if (synth.paused) synth.resume();
+    synth.speak(utterance);
+  });
 };
 
 export const cancelSpeech = () => {
