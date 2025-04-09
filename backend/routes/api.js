@@ -67,7 +67,7 @@ router.post('/object-recognition', async (req, res) => {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Tạo prompt cho Gemini - Mô tả ngắn gọn cho người khiếm thị
-    const prompt = "Hãy mô tả ngắn gọn hình ảnh này bằng tiếng Việt cho người khiếm thị. Chỉ tập trung vào các đối tượng chính và vị trí tương đối của chúng. Mô tả trong 5-6 câu ngắn, đơn giản, dễ hiểu. Chỉ nêu những thông tin quan trọng nhất mà người khiếm thị cần biết để hiểu được nội dung chính của hình ảnh.";
+    const prompt = "Hãy mô tả ngắn gọn hình ảnh này bằng tiếng Việt cho người khiếm thị. Chỉ tập trung vào các đối tượng chính. Mô tả trong 4-5 câu ngắn, đơn giản, dễ hiểu. Chỉ nêu những thông tin quan trọng nhất mà người khiếm thị cần biết để hiểu được nội dung chính của hình ảnh. Ngoài ra hãy mô tả vị trí của các đối tượng (bao gồm hướng và khoảng cách bao nhiêu mét) đến trước mặt";
 
     // Chuẩn bị dữ liệu hình ảnh
     const imageData = {
