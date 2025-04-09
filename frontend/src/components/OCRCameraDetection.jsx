@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performOCR } from '../services/api'
 import OCRResult from './OCRResult'
-import './OCRCameraDetection.css'
+import './generic_styles/GeneralCameraDetection.css'
 
 export default function OCRCameraDetection() {
   const [image, setImage] = useState(null)
@@ -170,7 +170,7 @@ export default function OCRCameraDetection() {
   }
 
   return (
-    <div className="ocr-camera-recognition">
+    <div className="camera-recognition">
       <div className="camera-controls">
         {!stream ? (
           <button 

@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import ImageUploader from '../components/ImageUploader'
 import CameraDetection from '../components/CameraDetection'
-import './ObjectRecognition.css'
+import './GeneralRecognition.css'
 
 export default function ObjectRecognition() {
   const [activeTab, setActiveTab] = useState('upload')
 
   return (
-    <div className="object-recognition-page">
+    <div className="recognition-page">
       <h2>Nhận diện vật thể</h2>
       
       <div className="recognition-tabs">

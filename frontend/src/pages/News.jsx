@@ -110,7 +110,7 @@ export default function News() {
       <h2>Tin tức</h2>
       
       <div className="category-selector">
-        <h3>Chọn danh mục:</h3>
+        <h3>Danh mục:</h3>
         <div className="category-buttons">
           {categories.map(category => (
             <button
@@ -130,7 +130,7 @@ export default function News() {
         ) : (
           <>
             <div className="news-list">
-              <h3>Danh sách tin tức:</h3>
+              <h3>Tin tức:</h3>
               <ul>
                 {paginatedNews.map((item, index) => (
                   <li key={index}>
@@ -166,7 +166,7 @@ export default function News() {
                   ) : (
                     <div dangerouslySetInnerHTML={{ __html: selectedArticle.content }}></div>
                   )}
-                  <button onClick={readArticle}>Đọc bài viết</button>
+                  <button className="readBtn" onClick={readArticle}>Đọc bài viết</button>
                 </>
               )}
             </div>

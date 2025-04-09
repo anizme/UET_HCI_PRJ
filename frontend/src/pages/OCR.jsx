@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import OCRImageUploader from '../components/OCRImageUploader'
 import OCRCameraDetection from '../components/OCRCameraDetection'
-import './OCR.css'
+import './GeneralRecognition.css'
 
 
 export default function OCR() {
@@ -13,7 +13,7 @@ export default function OCR() {
   }, [])
 
   return (
-    <div className="ocr-page">
+    <div className="recognition-page">
       <h2>Nhận diện văn bản</h2>
 
       <div className="recognition-tabs">

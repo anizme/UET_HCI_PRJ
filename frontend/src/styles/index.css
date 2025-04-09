@@ -13,54 +13,9 @@ body {
   background-color: var(--bg-color);
 }
 
-
-/* Page-specific styles */
-.ocr-page,
-.object-recognition-page,
-.news-page {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.ocr-options,
-.camera-controls,
-.detection-controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.preview-area {
-  margin: 1rem 0;
-}
-
-.camera-preview video {
-  max-width: 100%;
-  border: 2px solid var(--primary-color);
-  border-radius: 4px;
-}
-
-.image-preview img {
-  max-width: 100%;
-  max-height: 500px;
-  object-fit: contain;
-  display: block;
-  border: 2px solid var(--primary-color);
-  border-radius: 4px;
-}
-
-.result-section {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #e8f4f8;
-  border-radius: 4px;
-}
-
-
 button {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--contrast-text);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -78,9 +33,13 @@ button:disabled {
 }
 
 
+button:hover:not(:disabled) {
+  background-color: var(--secondary-color);
+}
+
 
 /* Process button enhancements */
-.process-button {
+/* .process-button {
   width: 100%;
   padding: 0.8rem;
   font-weight: bold;
@@ -93,4 +52,4 @@ button:disabled {
 .process-button:hover:not(:disabled) {
   background-color: var(--primary-color);
   transform: scale(1.02);
-}
+} */

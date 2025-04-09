@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performOCR } from '../services/api'
 import OCRResult from './OCRResult'
-import './ImageUploader.css'
+import './generic_styles/GeneralImageUploader.css'
 
 export default function OCRImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null)
@@ -65,7 +65,7 @@ export default function OCRImageUploader() {
   }
 
   return (
-    <div className="ocr-image-uploader">
+    <div className="image-uploader">
       <div className="upload-section">
         <input 
           type="file" 

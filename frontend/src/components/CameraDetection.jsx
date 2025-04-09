@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performObjectRecognition } from '../services/api'
 import RecognitionResult from './RecognitionResult'
-import './CameraDetection.css'
+import './generic_styles/GeneralCameraDetection.css'
 
 export default function CameraDetection() {
   const [image, setImage] = useState(null)

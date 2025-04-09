@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { speak } from '../services/speechSynthesis'
 import { performObjectRecognition } from '../services/api'
 import RecognitionResult from './RecognitionResult'
-import './ImageUploader.css'
+import './generic_styles/GeneralImageUploader.css'
 
 export default function ImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null)

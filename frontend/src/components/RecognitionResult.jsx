@@ -1,4 +1,5 @@
 import { speak } from '../services/speechSynthesis'
+import './RecognitionResult.css'
 
 export default function RecognitionResult({ result, isProcessing }) {
   const readResult = () => {
