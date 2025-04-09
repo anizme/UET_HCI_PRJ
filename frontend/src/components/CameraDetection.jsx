@@ -10,30 +10,53 @@ export default function CameraDetection() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [stream, setStream] = useState(null)
   const [cameraError, setCameraError] = useState(null)
+  const [realtimeMode, setRealtimeMode] = useState(false)
+  const [captureInterval, setCaptureInterval] = useState(null)
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
 
   useEffect(() => {
     return () => {
       // Cleanup: ensure camera is stopped when component unmounts
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop())
-      }
+      stopCameraStream()
+      clearCaptureInterval()
     }
-  }, [stream])
+  }, [])
+
+  // Separate functions to clean up camera and interval
+  const stopCameraStream = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
+      setStream(null)
+    }
+  }
+
+  const clearCaptureInterval = () => {
+    if (captureInterval) {
+      clearInterval(captureInterval)
+      setCaptureInterval(null)
+    }
+  }
 
   const startCamera = async () => {
     try {
       setCameraError(null)
-      // Kiểm tra xem thiết bị có hỗ trợ camera không
+      
+      // First, ensure any existing streams are stopped
+      stopCameraStream()
+      
+      // Check if device supports camera
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error('Browser không hỗ trợ truy cập camera')
       }
 
-      // Cấu hình camera cho thiết bị di động
+      // Camera configuration for mobile devices
       const constraints = {
         video: {
-          facingMode: { exact: 'environment' }, // Bắt buộc sử dụng camera sau
+          facingMode: { ideal: 'environment' }, // Changed from exact to ideal for better compatibility
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
@@ -53,7 +76,7 @@ export default function CameraDetection() {
           speak('Camera đã bật. Hãy hướng camera vào vật thể cần nhận diện.')
         }
       } catch (err) {
-        // Nếu không thể sử dụng camera sau, thử dùng camera trước
+        // If back camera isn't available, try front camera
         if (err.name === 'OverconstrainedError' || err.name === 'ConstraintNotSatisfiedError') {
           const frontCameraConstraints = {
             video: {
@@ -100,20 +123,16 @@ export default function CameraDetection() {
   }
 
   const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop())
-      if (videoRef.current) {
-        videoRef.current.srcObject = null
-      }
-      setStream(null)
-      setImage(null)
-      setCameraError(null)
-      speak('Đã tắt camera.')
-    }
+    stopCameraStream()
+    clearCaptureInterval()
+    setImage(null)
+    setCameraError(null)
+    setRealtimeMode(false)
+    speak('Đã tắt camera.')
   }
 
   const captureImage = () => {
-    if (videoRef.current && canvasRef.current) {
+    if (videoRef.current && canvasRef.current && videoRef.current.videoWidth > 0) {
       const video = videoRef.current
       const canvas = canvasRef.current
       canvas.width = video.videoWidth
@@ -121,33 +140,75 @@ export default function CameraDetection() {
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
       
-      const imageData = canvas.toDataURL('image/jpeg', 0.8) // Reduced quality for better performance
+      const imageData = canvas.toDataURL('image/jpeg', 0.8)
       setImage(imageData)
       speak('Đã chụp ảnh. Bạn có thể nhấn nút nhận diện vật thể.')
+    } else {
+      speak('Không thể chụp ảnh. Hãy đảm bảo camera đang hoạt động.')
     }
   }
 
-  const processImage = async () => {
-    if (!image) {
-      speak('Vui lòng chụp ảnh trước khi nhận diện.')
+  const processImage = async (imageToProcess = null, shouldSpeak = true) => {
+    const currentImage = imageToProcess || image
+    
+    if (!currentImage) {
+      if (shouldSpeak) await speak('Vui lòng chụp ảnh trước khi nhận diện.')
       return
     }
 
     setIsProcessing(true)
-    speak('Đang nhận diện vật thể...')
+    if (shouldSpeak) await speak('Đang nhận diện vật thể...')
 
     try {
-      const result = await performObjectRecognition(image)
+      const result = await performObjectRecognition(currentImage)
       const description = result.description || `Nhận diện được: ${result.object}`
       setRecognitionResult(description)
-      speak(description)
+      if (shouldSpeak) await speak(description)
     } catch (error) {
       const errorMessage = 'Có lỗi xảy ra khi nhận diện vật thể.'
-      speak(errorMessage)
+      if (shouldSpeak) await speak(errorMessage)
       setRecognitionResult(errorMessage)
       console.error('Object recognition error:', error)
     } finally {
       setIsProcessing(false)
+    }
+  }
+  
+  const toggleRealtimeMode = () => {
+    if (realtimeMode) {
+      // Turn off realtime mode
+      clearCaptureInterval()
+      setRealtimeMode(false)
+      speak('Đã tắt chế độ nhận diện thời gian thực.')
+    } else {
+      // Turn on realtime mode - don't restart the camera, just start the interval
+      setRealtimeMode(true)
+      speak('Đã bật chế độ nhận diện thời gian thực. Tự động nhận diện môi trường xung quanh mỗi 5 giây.')
+      
+      // Start the interval for capturing and processing images
+      let isProcessing = false;
+      const interval = setInterval(async () => {
+        if (isProcessing) return; // Skip if still processing previous image
+        
+        if (videoRef.current && canvasRef.current && videoRef.current.videoWidth > 0) {
+          isProcessing = true;
+          const video = videoRef.current
+          const canvas = canvasRef.current
+          canvas.width = video.videoWidth
+          canvas.height = video.videoHeight
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+          
+          const imageData = canvas.toDataURL('image/jpeg', 0.8) 
+          setImage(imageData)
+          await processImage(imageData, true) // Wait for processing and speaking to complete
+          isProcessing = false;
+        } else {
+          console.warn('Video not ready for capture in real-time mode')
+        }
+      }, 5000) // Capture every 5 seconds
+      
+      setCaptureInterval(interval)
     }
   }
 
@@ -164,12 +225,21 @@ export default function CameraDetection() {
           </button>
         ) : (
           <>
+            {!realtimeMode && (
+              <button 
+                onClick={captureImage}
+                className="camera-button"
+                aria-label="Chụp ảnh"
+              >
+                Chụp ảnh
+              </button>
+            )}
             <button 
-              onClick={captureImage}
-              className="camera-button"
-              aria-label="Chụp ảnh"
+              onClick={toggleRealtimeMode}
+              className={`camera-button ${realtimeMode ? 'active' : ''}`}
+              aria-label={realtimeMode ? 'Tắt nhận diện thời gian thực' : 'Bật nhận diện thời gian thực'}
             >
-              Chụp ảnh
+              {realtimeMode ? 'Tắt nhận diện thời gian thực' : 'Bật nhận diện thời gian thực'}
             </button>
             <button 
               onClick={stopCamera}
@@ -200,7 +270,7 @@ export default function CameraDetection() {
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
 
-      {image && (
+      {image && !realtimeMode && (
         <div className="captured-preview">
           <img 
             src={image} 
@@ -208,13 +278,19 @@ export default function CameraDetection() {
             style={{ maxWidth: '300px' }} 
           />
           <button 
-            onClick={processImage} 
+            onClick={() => processImage()}
             disabled={isProcessing}
             className="process-button"
             aria-label="Nhận diện vật thể"
           >
             {isProcessing ? 'Đang xử lý...' : 'Nhận diện vật thể'}
           </button>
+        </div>
+      )}
+      
+      {realtimeMode && (
+        <div className="realtime-indicator">
+          <p>Đang nhận diện thời gian thực {isProcessing && '(đang xử lý...)'}</p>
         </div>
       )}
 

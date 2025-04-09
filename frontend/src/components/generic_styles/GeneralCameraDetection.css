@@ -19,6 +19,22 @@
   font-size: 1rem;
 }
 
+.camera-button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.camera-button.active {
+  background-color: #f44336;
+}
+
 .camera-preview {
   width: 100%;
   max-width: 640px;
@@ -48,20 +64,24 @@
 }
 
 .process-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: var(--third-color);
-  color: var(--contrast-text);
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #2196F3;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
 }
 
-.process-button:hover {
-  background-color: var(--third-color-dark);
-}
-
-.process-button:disabled {
-  background-color: var(--bg-color-dark);
-  cursor: not-allowed;
+.realtime-indicator {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(33, 150, 243, 0.1);
+  border: 1px solid #2196F3;
+  border-radius: 4px;
+  text-align: center;
+  color: #2196F3;
+  font-weight: bold;
 }
