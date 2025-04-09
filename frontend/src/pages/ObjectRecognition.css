@@ -1,13 +1,14 @@
+@import url('../styles/variables.css');
+
 .object-recognition-page {
   padding: 1rem;
-  max-width: 1000px;
   margin: 0 auto;
 }
 
 .recognition-tabs {
   display: flex;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--bg-color-dark);
   background-color: #f0f4f8;
   border-radius: 8px 8px 0 0;
   padding: 0.5rem;

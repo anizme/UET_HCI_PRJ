@@ -1,5 +1,5 @@
-/*OCR new style*/
-/* Empty preview state */
+@import url('../styles/variables.css');
+
 .empty-preview {
   display: flex;
   justify-content: center;
@@ -131,7 +131,7 @@
 }
 
 .text-action-button:hover {
-  background-color: #40b3e7;
+  background-color: var(--accent-color);
   transform: translateY(-2px);
 }
 
