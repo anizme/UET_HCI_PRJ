@@ -183,7 +183,7 @@ export default function CameraDetection() {
     } else {
       // Turn on realtime mode - don't restart the camera, just start the interval
       setRealtimeMode(true)
-      speak('Đã bật chế độ nhận diện thời gian thực. Tự động nhận diện môi trường xung quanh mỗi 5 giây.')
+      speak('Đã bật chế độ nhận diện thời gian thực. Tự động nhận diện môi trường xung quanh.')
       
       // Start the interval for capturing and processing images
       let isProcessing = false;

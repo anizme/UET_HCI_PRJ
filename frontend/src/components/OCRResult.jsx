@@ -36,6 +36,7 @@ export default function OCRResult({
           <button
             onClick={() => speak(text)}
             className="text-action-button"
+            aria-label="Đọc kết quả"
           >
             <span>🔊</span> Đọc kết quả
           </button>
