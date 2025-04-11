@@ -38,12 +38,14 @@ export default function Home() {
             <li>"Tin tức" - Mở trang tin tức</li>
             <li>"Dừng" - Tắt nhận diện giọng nói</li>
 
-            <li><strong>Camera và Chụp ảnh:</strong></li>
-            <li>"Chụp ảnh" - Chụp ảnh hiện tại</li>
+            <li><strong>Kích hoạt các nút chức năng:</strong></li>
+            <li>"Tải lên / Camera" - Chuyển đổi giữa 2 tab "Tải lên hình ảnh" và "Sử dụng camera"</li>
             <li>"Bật cam" - Kích hoạt camera</li>
             <li>"Tắt cam" - Tắt camera</li>
-            <li>"Nhận diện" - Bắt đầu nhận diện thời gian thực</li>
+            <li>"Chụp ảnh" - Chụp ảnh hiện tại</li>
+            <li>"Nhận diện" - Kích hoạt nhận diện thời gian thực</li>
             <li>"Tắt nhận diện" - Tắt nhận diện thời gian thực</li>
+            <li>"Nhận diện văn bản" - Kích hoạt nhận diện văn bản trong hình ảnh</li>
             <li>"Đọc kết quả" - Đọc kết quả nhận diện</li>
 
             <li><strong>Công cụ hỗ trợ:</strong></li>
