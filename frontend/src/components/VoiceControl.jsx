@@ -106,7 +106,7 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
   const handleObjectRecognitionCommands = (normalizedCommand, currentPath) => {
     if (!currentPath.includes('object-recognition')) return false
     
-    if (normalizedCommand.includes('bật cam')) {
+    if (normalizedCommand.includes('bật cam')||normalizedCommand.includes('bật camera')) {
       console.log('Attempting to start camera on object recognition page')
       return clickButtonUsingMultipleSelectors([
         '.camera-controls button.camera-button[aria-label="Bật camera"]',
@@ -120,8 +120,8 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
         '.camera-controls button:contains("Chụp ảnh")',
       ], 'Chụp ảnh')
     } 
-    else if ((normalizedCommand.includes('bật nhận diện thời gian thực') || 
-              (normalizedCommand.includes('nhận diện thời gian thực') || normalizedCommand.includes('nhận diện') && !normalizedCommand.includes('tắt')))) {
+    else if (normalizedCommand.includes('bật nhận diện thời gian thực') || 
+              normalizedCommand.includes('nhận diện thời gian thực') ) {
       console.log('Attempting to enable realtime mode')
       // First try to find inactive realtime button
       const buttons = Array.from(document.querySelectorAll('.camera-controls button'));
@@ -185,7 +185,7 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
       console.log('Could not find disable realtime button')
       return false
     } 
-    else if (normalizedCommand.includes('tắt cam')) {
+    else if (normalizedCommand.includes('tắt cam')||normalizedCommand.includes('tắt camera')) {
       console.log('Attempting to stop camera')
       return clickButtonUsingMultipleSelectors([
         '.camera-controls button.camera-button[aria-label="Tắt camera"]',
