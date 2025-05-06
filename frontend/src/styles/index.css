@@ -25,6 +25,7 @@ button {
 
 button:hover {
   background-color: var(--secondary-color);
+  scale: 1.1;
 }
 
 button:disabled {

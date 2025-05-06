@@ -28,8 +28,8 @@
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    /* flex-wrap: nowrap; */
+    /* overflow-x: auto; */
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--bg-color-border);
 }
@@ -117,6 +117,14 @@
 .pagination-controls button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
+    background-color: var(--primary-color);
+    color: var(--contrast-text);
+}
+
+.pagination-controls button:hover {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: var(--secondary-color);
 }
 
 /* Bên phải: nội dung bài viết */

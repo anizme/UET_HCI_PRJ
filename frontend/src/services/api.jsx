@@ -1,4 +1,4 @@
-const API_BASE_URL = '/api'
+const API_BASE_URL = 'https://localhost:5173/api'
 
 const fetchWithCertificate = async (url, options) => {
   try {

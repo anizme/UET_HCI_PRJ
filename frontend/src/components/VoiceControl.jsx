@@ -280,7 +280,7 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
         onClick={() => setIsListening(!isListening)}
         aria-label={isListening ? 'Dừng nhận diện giọng nói' : 'Bắt đầu nhận diện giọng nói'}
       >
-        {isListening ? '🛑 Dừng' : '🎤 Bắt đầu'}
+        {isListening ? 'Dừng' : 'Bắt đầu'}
       </button>
       {voiceCommand && <p className="voice-command">Lệnh: {voiceCommand}</p>}
     </div>

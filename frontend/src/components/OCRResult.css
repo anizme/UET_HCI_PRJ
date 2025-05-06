@@ -1,6 +1,8 @@
 @import url('../styles/variables.css');
 
 .ocr-result {
+    width: 100%;
+    padding: 1rem;
     border-radius: 8px;
     background-color: var(--bg-color-light);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -24,6 +26,7 @@
 
 .language-badge span {
     display: inline-block;
+    padding: 0.5rem;
     font-size: 1rem;
     background-color: var(--third-color-light);
     color: var(--third-color-neutral);
