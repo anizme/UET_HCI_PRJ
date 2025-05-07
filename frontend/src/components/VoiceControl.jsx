@@ -244,7 +244,7 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
   const handleNewsCommand = (normalizedCommand, currentPath) => {
     if (!currentPath.includes('news')) return false
 
-    if (normalizedCommand.includes("chọn chủ đề ")) {
+    if (normalizedCommand.includes("chọn chủ đề")) {
       const rawTopic = normalizedCommand.replace("chọn chủ đề", "").trim()
       const topic = rawTopic.charAt(0).toUpperCase() + rawTopic.slice(1)
       return clickButtonUsingMultipleSelectors([

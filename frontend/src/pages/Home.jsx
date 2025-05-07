@@ -51,8 +51,8 @@ export default function Home() {
               <li>"Tắt nhận diện" - Tắt nhận diện thời gian thực</li>
               <li>"Nhận diện văn bản" - Kích hoạt nhận diện văn bản trong hình ảnh</li>
               <li>"Đọc kết quả" - Đọc kết quả nhận diện</li>
-              <li>"Chọn chủ đề tin tức" - Chọn chủ đề của tin tức bạn muốn nghe, như Tin mới nhất, Thế giới, Thời sự, Thể thao, Công nghệ, Giải trí, Xe.</li>
-              <li>"Chọn bài viết số ..." - Chọn tin tức bạn muốn nghe.</li>
+              <li>"Chọn chủ đề <strong><em>tin tức</em></strong>" - Chọn chủ đề của tin tức bạn muốn nghe, như <em>Tin mới nhất, Thế giới, Thời sự, Thể thao, Công nghệ, Giải trí, Xe</em>.</li>
+              <li>"Chọn bài viết số ..." - Chọn bài viết bạn muốn nghe.</li>
               <li>"Đọc bài viết" - Đọc bài viết bạn đã chọn</li>
               <li>"Trang trước/Trang sau" - Chuyển đổi trang chứa các tin tức về chủ đề bạn đã chọn</li>
             </ul>
