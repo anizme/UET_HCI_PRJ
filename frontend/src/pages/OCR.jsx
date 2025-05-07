@@ -6,7 +6,7 @@ import './GeneralRecognition.css'
 
 
 export default function OCR() {
-  const [activeTab, setActiveTab] = useState('upload')
+  const [activeTab, setActiveTab] = useState('camera')
 
   useEffect(() => {
     speak('Trang nhận diện văn bản. Bạn có thể tải lên hình ảnh hoặc chụp ảnh trực tiếp.')
