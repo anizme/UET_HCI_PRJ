@@ -32,27 +32,41 @@ export default function Home() {
           <p>Bạn có thể sử dụng các lệnh giọng nói sau:</p>
           <ul>
             <li><strong>Điều hướng:</strong></li>
-            <li>"Trang chủ" - Để quay về trang này</li>
-            <li>"Nhận diện văn bản" - Mở công cụ OCR</li>
-            <li>"Nhận diện vật thể" - Mở công cụ nhận diện vật thể</li>
-            <li>"Tin tức" - Mở trang tin tức</li>
-            <li>"Dừng" - Tắt nhận diện giọng nói</li>
+            <ul>
+              <li>"Trang chủ" - Để quay về trang này</li>
+              <li>"Nhận diện văn bản" - Mở công cụ OCR</li>
+              <li>"Nhận diện vật thể" - Mở công cụ nhận diện vật thể</li>
+              <li>"Tin tức" - Mở trang tin tức</li>
+              <li>"Dừng" - Tắt nhận diện giọng nói</li>
+            </ul>
+            
 
             <li><strong>Kích hoạt các nút chức năng:</strong></li>
-            <li>"Tải lên / Camera" - Chuyển đổi giữa 2 tab "Tải lên hình ảnh" và "Sử dụng camera"</li>
-            <li>"Bật cam" - Kích hoạt camera</li>
-            <li>"Tắt cam" - Tắt camera</li>
-            <li>"Chụp ảnh" - Chụp ảnh hiện tại</li>
-            <li>"Nhận diện" - Kích hoạt nhận diện thời gian thực</li>
-            <li>"Tắt nhận diện" - Tắt nhận diện thời gian thực</li>
-            <li>"Nhận diện văn bản" - Kích hoạt nhận diện văn bản trong hình ảnh</li>
-            <li>"Đọc kết quả" - Đọc kết quả nhận diện</li>
+            <ul>
+              <li>"Tải lên / Camera" - Chuyển đổi giữa 2 tab "Tải lên hình ảnh" và "Sử dụng camera"</li>
+              <li>"Bật cam" - Kích hoạt camera</li>
+              <li>"Tắt cam" - Tắt camera</li>
+              <li>"Chụp ảnh" - Chụp ảnh hiện tại</li>
+              <li>"Nhận diện" - Kích hoạt nhận diện thời gian thực</li>
+              <li>"Tắt nhận diện" - Tắt nhận diện thời gian thực</li>
+              <li>"Nhận diện văn bản" - Kích hoạt nhận diện văn bản trong hình ảnh</li>
+              <li>"Đọc kết quả" - Đọc kết quả nhận diện</li>
+              <li>"Chọn chủ đề tin tức" - Chọn chủ đề của tin tức bạn muốn nghe, như Tin mới nhất, Thế giới, Thời sự, Thể thao, Công nghệ, Giải trí, Xe.</li>
+              <li>"Chọn bài viết số ..." - Chọn tin tức bạn muốn nghe.</li>
+              <li>"Đọc bài viết" - Đọc bài viết bạn đã chọn</li>
+              <li>"Trang trước/Trang sau" - Chuyển đổi trang chứa các tin tức về chủ đề bạn đã chọn</li>
+            </ul>
+            
+            
 
             <li><strong>Công cụ hỗ trợ:</strong></li>
-            <li>"Tăng chữ" - Phóng to văn bản</li>
-            <li>"Giảm chữ" - Thu nhỏ văn bản</li>
-            <li>"Chế độ tối" - Bật/tắt chế độ tối</li>
-            <li>"Tương phản cao" - Bật/tắt chế độ tương phản cao</li>
+            <ul>
+              <li>"Tăng chữ" - Phóng to văn bản</li>
+              <li>"Giảm chữ" - Thu nhỏ văn bản</li>
+              <li>"Chế độ tối" - Bật/tắt chế độ tối</li>
+              <li>"Tương phản cao" - Bật/tắt chế độ tương phản cao</li>
+            </ul>
+            
           </ul>
         </div>
       </div>

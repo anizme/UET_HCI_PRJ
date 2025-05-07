@@ -241,6 +241,46 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
     return false
   }
 
+  const handleNewsCommand = (normalizedCommand, currentPath) => {
+    if (!currentPath.includes('news')) return false
+
+    if (normalizedCommand.includes("chọn chủ đề ")) {
+      const rawTopic = normalizedCommand.replace("chọn chủ đề", "").trim()
+      const topic = rawTopic.charAt(0).toUpperCase() + rawTopic.slice(1)
+      return clickButtonUsingMultipleSelectors([
+        `button[aria-label="${topic}"]`
+      ], topic)
+    }
+
+    if (normalizedCommand.includes("chọn bài viết số")) {
+      const words = normalizedCommand.split(" ")
+      const index = parseInt(words[words.length - 1], 10)
+      if (!isNaN(index)) {
+        const newsButtons = Array.from(document.querySelectorAll('.news-list button'))
+        const newsString = newsButtons[index - 1].innerHTML
+        return clickButtonUsingMultipleSelectors([
+          `button[aria-label="Tin số ${index}"]`
+        ], newsString)
+      }
+    }
+
+    if (normalizedCommand.includes("đọc bài viết")) {
+      return clickButtonUsingMultipleSelectors([
+        `button[aria-label="Đọc bài viết"]`
+      ], "Đọc bài viết")
+    }
+
+    if (normalizedCommand.includes("chuyển trang trước") || normalizedCommand.includes("chuyển trang sau")) {
+      const words = normalizedCommand.split(" ")
+      let targetString = "Trang " + words[words.length - 1]
+      return clickButtonUsingMultipleSelectors([
+        `button[aria-label="${targetString}"]`
+      ], targetString)
+    }
+
+    return false;
+  };
+
   // Main handler for voice commands
   const handleVoiceCommand = (command) => {
     setVoiceCommand(command)
@@ -255,6 +295,7 @@ export default function VoiceControl({ isListening, setIsListening, onNavigate }
     if (handleModeSwitchCommands(normalizedCommand)) return
     if (handleObjectRecognitionCommands(normalizedCommand, currentPath)) return
     if (handleOCRCommands(normalizedCommand, currentPath)) return
+    if (handleNewsCommand(normalizedCommand, currentPath)) return
     
     console.log('No matching command found for:', normalizedCommand)
     speak('Không hiểu lệnh. Vui lòng thử lại.')

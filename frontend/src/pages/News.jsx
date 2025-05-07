@@ -23,9 +23,12 @@ export default function News() {
   ]
 
   useEffect(() => {
+    // const categoriesString = categories.map(category => category.name).join(", ")
+    // speak(`Trang tin tức tổng hợp, bạn có thể chọn các chủ đề như ${categoriesString}.`)
     loadNews(selectedCategory)
   }, [selectedCategory])
 
+  
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId)
     return category ? category.name : ''
@@ -35,15 +38,16 @@ export default function News() {
     setIsLoading(true)
     setCurrentPage(1)
     speak(`Đang tải tin tức về ${getCategoryName(category)}...`)
-
     try {
       const newsData = await fetchHeadlines(category)
-      setNews(newsData)
-      let newsList = `Đã tải xong ${newsData.length} tin tức. `
-      newsData.slice(0, itemsPerPage).forEach((item, idx) => {
-        newsList += `Tin ${idx + 1}: ${item.title}. `
-      })
-      speak(newsList)
+      setTimeout(() => {
+        setNews(newsData)
+        let newsList = `Đã tải xong ${newsData.length} tin tức về chủ đề ${getCategoryName(category)}, chia thành ${parseInt(newsData.length / itemsPerPage, 10)} trang. `
+        newsData.slice(0, itemsPerPage).forEach((item, idx) => {
+          newsList += `Tin ${idx + 1}: ${item.title}. `
+        })
+        speak(newsList)
+      }, 2000)
     } catch (error) {
       speak('Có lỗi xảy ra khi tải tin tức.')
       console.error('News error:', error)
@@ -110,7 +114,7 @@ export default function News() {
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(prev => prev - 1)
-      let newsList = `Quay lại trang ${currentPage - 1}`
+      let newsList = `Quay lại trang ${currentPage - 1}. `
       const prevPageNews = news.slice((currentPage - 2) * itemsPerPage, (currentPage - 1) * itemsPerPage)
       prevPageNews.forEach((item, idx) => {
         newsList += `Tin ${idx + 1}: ${item.title}. `
@@ -131,6 +135,7 @@ export default function News() {
             <button
               key={category.id}
               className={selectedCategory === category.id ? 'active' : ''}
+              aria-label = {category.name}
               onClick={() => handleCategoryChange(category.id)}
             >
               {category.name}
@@ -152,6 +157,7 @@ export default function News() {
                     <button
                       onClick={() => handleArticleSelect(item)}
                       className={selectedArticle === item ? 'selected' : ''}
+                      aria-label={`Tin số ${index % itemsPerPage + 1}`}
                     >
                       {item.title}
                     </button>
@@ -161,11 +167,11 @@ export default function News() {
 
               {news.length > itemsPerPage && (
                 <div className="pagination-controls">
-                  <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                  <button onClick={handlePrevPage} disabled={currentPage === 1} aria-label = "Trang trước">
                     Trang trước
                   </button>
                   <span>Trang {currentPage} / {totalPages}</span>
-                  <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                  <button onClick={handleNextPage} disabled={currentPage === totalPages} aria-label = "Trang sau">
                     Trang sau
                   </button>
                 </div>
@@ -181,7 +187,7 @@ export default function News() {
                   ) : (
                     <div dangerouslySetInnerHTML={{ __html: selectedArticle.content }}></div>
                   )}
-                  <button className="readBtn" onClick={readArticle}>Đọc bài viết</button>
+                  <button className="readBtn" onClick={readArticle} aria-label = "Đọc bài viết">Đọc bài viết</button>
                 </>
               )}
             </div>

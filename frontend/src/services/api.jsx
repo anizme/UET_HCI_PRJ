@@ -52,7 +52,6 @@ export const fetchHeadlines = async (category) => {
         },
       })
       const newsList = (await response.json())["news"]
-      console.log(newsList)
       resolve(newsList || [])
     }, 1000)
   })
