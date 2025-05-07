@@ -8,6 +8,7 @@ export default function News() {
   const [selectedCategory, setSelectedCategory] = useState('tin-moi-nhat')
   const [selectedArticle, setSelectedArticle] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingText, setisLoadingText] = useState("Đang tải tin tức về Tin mới nhất")
   const [isArticleLoading, setIsArticleLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
@@ -36,23 +37,32 @@ export default function News() {
 
   const loadNews = async (category) => {
     setIsLoading(true)
+    setisLoadingText(`Đang tải tin tức về ${getCategoryName(category)}...`)
     setCurrentPage(1)
     speak(`Đang tải tin tức về ${getCategoryName(category)}...`)
+
     try {
       const newsData = await fetchHeadlines(category)
-      setTimeout(() => {
-        setNews(newsData)
-        let newsList = `Đã tải xong ${newsData.length} tin tức về chủ đề ${getCategoryName(category)}, chia thành ${parseInt(newsData.length / itemsPerPage, 10)} trang. `
-        newsData.slice(0, itemsPerPage).forEach((item, idx) => {
-          newsList += `Tin ${idx + 1}: ${item.title}. `
-        })
-        speak(newsList)
-      }, 2000)
+      console.log(newsData)
+      if (newsData && newsData.content === "Có lỗi xảy ra khi tải tin tức.") {
+        setisLoadingText(newsData.content)
+        speak(newsData.content)
+        return
+      } else {
+        setTimeout(() => {
+          setNews(newsData)
+          let newsList = `Đã tải xong ${newsData.length} tin tức về chủ đề ${getCategoryName(category)}, chia thành ${parseInt(newsData.length / itemsPerPage, 10)} trang. `
+          newsData.slice(0, itemsPerPage).forEach((item, idx) => {
+            newsList += `Tin ${idx + 1}: ${item.title}. `
+          })
+          speak(newsList)
+          setIsLoading(false)
+        }, 2000)
+        
+      }
+      
     } catch (error) {
-      speak('Có lỗi xảy ra khi tải tin tức.')
       console.error('News error:', error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -67,19 +77,22 @@ export default function News() {
 
     try {
       const fetchedArticle = await fetchNews(article)
-      if (fetchedArticle) {
-        setSelectedArticle(fetchedArticle)
+      if (fetchedArticle && fetchedArticle.content == "Có lỗi xảy ra khi tải nội dung bài viết.") {
+        const tempArticle = {title: article.title, content: fetchedArticle.content}
+        setSelectedArticle(tempArticle)
+        setIsArticleLoading(false)
+        speak(fetchedArticle.content)
       } else {
-        setSelectedArticle({ ...article, content: "Có lỗi xảy ra khi tải tin tức" })
+        setSelectedArticle(fetchedArticle)
+        setIsArticleLoading(false)
+        speak(`Đã chọn bài viết: ${article.title}. Nhấn nút đọc để nghe nội dung.`)
       }
     } catch (error) {
       speak('Có lỗi xảy ra khi tải tin tức.')
       console.error('News error:', error)
-    } finally {
-      setIsArticleLoading(false)
     }
 
-    speak(`Đã chọn bài viết: ${article.title}. Nhấn nút đọc để nghe nội dung.`)
+    
   }
 
   const readArticle = () => {
@@ -146,7 +159,7 @@ export default function News() {
 
       <div className="news-content">
         {isLoading ? (
-          <p>Đang tải tin tức...</p>
+          <p>{ isLoadingText }</p>
         ) : (
           <>
             <div className="news-list">

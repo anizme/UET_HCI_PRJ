@@ -41,36 +41,42 @@ export const performObjectRecognition = async (imageData) => {
 }
 
 export const fetchHeadlines = async (category) => {
-  // In a real app, this would call your backend API
-  // For now, we'll mock some data
-  return new Promise((resolve) => {
-    setTimeout(async () => {
-      const response = await fetch(`${API_BASE_URL}/fetch-news/${category}`, {
-        method: "GET",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      const newsList = (await response.json())["news"]
-      resolve(newsList || [])
-    }, 1000)
-  })
+  try {
+    const response = await fetch(`${API_BASE_URL}/fetch-news/${category}`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to fetch headlines: ${response.statusText}`)
+    }
+    const newsList = (await response.json())["news"]
+    return newsList || []
+  } catch (error) {
+    console.error('Error fetching headlines:', error)
+    return { content: "Có lỗi xảy ra khi tải tin tức." }
+  }
 }
 
 export const fetchNews = async (news) => {
-  return new Promise((resolve) => {
-    setTimeout(async () => {
-      const response = await fetch(`${API_BASE_URL}/fetch-news/`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          "news": news
-        }),
-      })
-      const newsContent = await response.json()
-      resolve(newsContent || null)
-    }, 1000)
-  })
+  try {
+    const response = await fetch(`${API_BASE_URL}/fetch-news/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "news": news
+      }),
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to fetch news content: ${response.statusText}`)
+    }
+    const newsContent = await response.json()
+    return newsContent || null
+  } catch (error) {
+    console.error('Error fetching news content:', error)
+    return { content: "Có lỗi xảy ra khi tải nội dung bài viết." }
+  }
 }
