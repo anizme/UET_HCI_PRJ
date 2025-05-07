@@ -39,7 +39,11 @@ export default function News() {
     try {
       const newsData = await fetchHeadlines(category)
       setNews(newsData)
-      speak(`Đã tải xong ${newsData.length} tin tức.`)
+      let newsList = `Đã tải xong ${newsData.length} tin tức. `
+      newsData.slice(0, itemsPerPage).forEach((item, idx) => {
+        newsList += `Tin ${idx + 1}: ${item.title}. `
+      })
+      speak(newsList)
     } catch (error) {
       speak('Có lỗi xảy ra khi tải tin tức.')
       console.error('News error:', error)
@@ -94,14 +98,25 @@ export default function News() {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(prev => prev + 1)
-      speak(`Chuyển sang trang ${currentPage + 1}`)
+      const nextPageNews = news.slice((currentPage) * itemsPerPage, (currentPage + 1) * itemsPerPage)
+      let newsList = `Chuyển sang trang ${currentPage + 1}. `
+      nextPageNews.forEach((item, idx) => {
+        newsList += `Tin ${idx + 1}: ${item.title}. `
+      })
+      speak(newsList)
     }
   }
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(prev => prev - 1)
-      speak(`Quay lại trang ${currentPage - 1}`)
+      let newsList = `Quay lại trang ${currentPage - 1}`
+      const prevPageNews = news.slice((currentPage - 2) * itemsPerPage, (currentPage - 1) * itemsPerPage)
+      prevPageNews.forEach((item, idx) => {
+        newsList += `Tin ${idx + 1}: ${item.title}. `
+      })
+      speak(newsList)
+
     }
   }
 
